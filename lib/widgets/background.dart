@@ -1,5 +1,3 @@
-
-import 'package:flutter/foundation.dart' as TargetPlatform;
 import 'package:flutter/material.dart';
 
 class Background extends StatelessWidget {
@@ -14,7 +12,7 @@ class Background extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: size.height,
       //color: Colors.pink,

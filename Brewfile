@@ -1,0 +1,8 @@
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/core"
+brew "chruby"
+brew "cocoapods"
+brew "gmp"
+brew "openssl@3"
+brew "ruby-install"

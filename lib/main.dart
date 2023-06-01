@@ -1,44 +1,24 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:splash_screen_view/SplashScreenView.dart';
-import 'package:vehicle_management_and_booking_system/screens/home_screen.dart';
-import 'package:vehicle_management_and_booking_system/screens/login.dart';
+import 'package:vehicle_management_and_booking_system/app/app.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+ 
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: "AIzaSyDyCtN4KYInCI8NXHKvYNVq4YPNk7e8o70",
+        appId: "1:467918462056:web:37bc883433ff8d2b9d2fdd",
+        messagingSenderId: "467918462056",
+        projectId: "vmbs-2c700",
+        storageBucket: "vmbs-2c700.appspot.com"
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
+
   runApp(const MyApp());
 }
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    Widget example1 = SplashScreenView(
-      navigateRoute: const LoginScreen(),
-      duration: 5000,
-      imageSize: 130,
-      imageSrc: "assets/images/main.png",
-      text: "Splash Screen",
-      textType: TextType.ColorizeAnimationText,
-      textStyle: const TextStyle(
-        fontSize: 40.0,
-      ),
-      colors: const [
-        Colors.purple,
-        Colors.blue,
-        Colors.yellow,
-        Colors.red,
-      ],
-      backgroundColor: Colors.white,
-    );
-    return MaterialApp(
-      title: 'VMBS',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-       // brightness: Brightness.dark
-      ),
-      home: HomeScreen(title: "title"),
-    );
-  }
-}
-
