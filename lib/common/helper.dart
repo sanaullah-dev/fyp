@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:developer';
+import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tuple/tuple.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -39,7 +42,25 @@ class Helper {
       final url = await taskSnapshot.ref.getDownloadURL();
 
       return url;
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
+      rethrow;
+    }
+  }
+
+  static Future<String> uploadWebImage(
+      {required String id, required Uint8List file, required String ref}) async {
+        try {
+      // ignore: no_leading_underscores_for_local_identifiers
+      FirebaseStorage _storage = FirebaseStorage.instance;
+       // log(file.path);
+      TaskSnapshot taskSnapshot =
+          await _storage.ref(ref).putData(file);
+          log(id);
+        log(ref);   
+      final url = await taskSnapshot.ref.getDownloadURL();
+
+      return url;
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -128,4 +149,10 @@ class Helper {
     return Tuple2(_selectedAddress, location);
    
   }
+
+
+
+
+
+
 }

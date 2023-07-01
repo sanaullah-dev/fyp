@@ -18,7 +18,11 @@ class OperatorRegistrationController with ChangeNotifier {
       notifyListeners();
 
       final imageUrls = await _repoForUploadImage.uploadFile(
-          image, details.operatorId, details.uid,"operators");
+        image: image,
+        id: details.operatorId,
+        uid: details.uid,
+        collectionName: "operators",
+      );
       log(imageUrls);
 
       details.profilePicture = imageUrls;

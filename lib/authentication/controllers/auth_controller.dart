@@ -1,9 +1,12 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/db/database.dart';
 import 'package:vehicle_management_and_booking_system/common/helper.dart';
@@ -38,9 +41,9 @@ class AuthController extends ChangeNotifier {
     required String email,
     required String password,
   }) async {
-   /// ProgressDialog pd = ProgressDialog(context: context);
+    /// ProgressDialog pd = ProgressDialog(context: context);
     try {
-     // pd.show(max: 100, msg: "Please wait...");
+      // pd.show(max: 100, msg: "Please wait...");
       appUser = await _db.signInWithEmailAndPassword(email, password);
       // ignore: use_build_context_synchronously
       //pd.close();
@@ -48,45 +51,45 @@ class AuthController extends ChangeNotifier {
       Navigator.of(context).pop();
       // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, AppRouter.bottomNavigationBar);
-      
-       // ignore: use_build_context_synchronously
-       
-       // ignore: use_build_context_synchronously
-       showSnackBarMessage('Login successfully',context);
+
+      // ignore: use_build_context_synchronously
+
+      // ignore: use_build_context_synchronously
+      showSnackBarMessage('Login successfully', context);
     } on FirebaseAuthException catch (e) {
       log(e.code);
       log(e.message!);
       print("Error in controller: $e");
-       showSnackBarMessage('Error Login: ${e.message}',context);
-   //   pd.close();
+      showSnackBarMessage('Error Login: ${e.message}', context);
+      //   pd.close();
     }
   }
-void showSnackBarMessage(String message,BuildContext context) {
-  final snackBar = SnackBar(
 
-    content: Text(message),
-    duration: const Duration(seconds: 4),
-  );
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-}
+  void showSnackBarMessage(String message, BuildContext context) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: const Duration(seconds: 4),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   Future<void> createWithEmailAndPassword(
     BuildContext context, {
     required UserModel user,
     required String password,
   }) async {
-     ProgressDialog pd = ProgressDialog(context: context);
+    ProgressDialog pd = ProgressDialog(context: context);
     try {
-       pd.show(max: 100, msg: "Please wait...");
-      
-          await _db.signUpWithEmailAndPassword(user: user, password: password);
+      pd.show(max: 100, msg: "Please wait...");
+
+      await _db.signUpWithEmailAndPassword(user: user, password: password);
       appUser = user;
-        pd.close();
-      
+      pd.close();
+
       // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, AppRouter.bottomNavigationBar);
       log("Now current User: ${appUser?.toJson().toString()}");
       notifyListeners();
-    
     } catch (e) {
       print("Error in controller: $e");
       pd.close();
@@ -101,34 +104,45 @@ void showSnackBarMessage(String message,BuildContext context) {
         context, AppRouter.login, (route) => false);
   }
 
-
-
 // Upload Image
   XFile? pickedImage;
+  Uint8List? pickedWebImage;
 
   void changeImage({required XFile? image}) {
     pickedImage = image;
     uploadProfileImage();
   }
 
+  void changeImageOnWeb({required Uint8List image}) {
+    pickedWebImage = image;
+    uploadProfileImage();
+  }
 
   bool isUploading = false;
 
   Future<void> uploadProfileImage() async {
     try {
-     
       isUploading = true;
       notifyListeners();
-      if (pickedImage != null) {
+      if (pickedImage != null || pickedWebImage != null) {
         if (appUser!.profileUrl != null) {
           await Helper.deleteImage(url: appUser!.profileUrl!);
           appUser!.profileUrl = null;
         }
-        final url = await Helper.uploadImage(
+        appUser!.profileUrl = null;
+        late String url;
+        if (!kIsWeb) {
+          url = await Helper.uploadImage(
+              id: appUser!.uid,
+              file: pickedImage!,
+              ref: "users/${appUser!.uid}/${const Uuid().v1()}");
+        } else {
+          url = await Helper.uploadWebImage(
             id: appUser!.uid,
-            file: pickedImage!,
-            ref: "users/${appUser!.uid}/${pickedImage!.name}");
-
+            file: pickedWebImage!,
+            ref: "users/${appUser!.uid}/${const Uuid().v1()}",
+          );
+        }
         appUser!.profileUrl = url;
         await _db.updateUser(user: appUser!);
         isUploading = false;
@@ -138,5 +152,4 @@ void showSnackBarMessage(String message,BuildContext context) {
       rethrow;
     }
   }
-
 }

@@ -31,7 +31,7 @@ class MachineryModel {
   String emergencyNumber;
   List<String>? images;
   Timestamp dateAdded;
-  double rating;
+  dynamic rating;
   Location location;
 
   factory MachineryModel.fromJson(Map<String, dynamic> json) => MachineryModel(

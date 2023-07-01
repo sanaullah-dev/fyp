@@ -19,7 +19,7 @@ class AppRouter {
   static const String operatorDetails = "/operatorDetails";
   // static const String addOperatorStepperScreen = "/addOperatorStepperScreen";
   static const String machineryRegistration = "/machineryRegistration";
-  static const String ma = "/maDetails";
+  static const String machineryDetails = "/maDetails";
   static const String operatorRegistration = "/operatorRegistration";
   static const String machineryFormScreen = "/machineryScreen";
   static const String changePasswordScreen = "/changePasswordScreen";
@@ -67,7 +67,7 @@ class AppRouter {
           builder: ((context) => const MachineryFormScreen()),
           settings: settings,
         );
-      case ma:
+      case machineryDetails:
         final args = settings.arguments as IndivisualPageArgs;
         return MaterialPageRoute(
           builder: ((context) => MachineryDetail(

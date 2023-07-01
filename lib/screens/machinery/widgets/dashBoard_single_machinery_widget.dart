@@ -46,11 +46,12 @@ class _SingleMachineryWidgetState extends State<SingleMachineryWidget>
     _controller.forward();
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, AppRouter.ma,
+        Navigator.pushNamed(context, AppRouter.machineryDetails,
             arguments: IndivisualPageArgs(
               machineryDetails: widget.machineryDetails,
             ));
-        log(widget.machineryDetails.title);
+
+        //log(widget.machineryDetails.title);
         // Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
         //   return MachineryDetail(
         //     machineryDetails: widget.machineryDetails,
@@ -160,7 +161,7 @@ class _SingleMachineryWidgetState extends State<SingleMachineryWidget>
                     elevation: 2,
                     child: Padding(
                       padding: const EdgeInsets.all(6.0),
-                      child: Text("Model ${widget.machineryDetails.model}"),
+                      child: Text("Model ${widget.machineryDetails.model.toString()}"),
                     )),
                 const SizedBox(
                   height: 10,
@@ -182,7 +183,7 @@ class _SingleMachineryWidgetState extends State<SingleMachineryWidget>
                       child: Padding(
                         padding: const EdgeInsets.only(left: 11.0),
                         child: Text(
-                          "Rs. ${widget.machineryDetails.charges}/hr",
+                          "Rs. ${widget.machineryDetails.charges.toString()}/hr",
                         ),
                       ),
                     ),

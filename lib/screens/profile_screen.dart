@@ -1,6 +1,11 @@
-
+import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_arc_speed_dial/flutter_speed_dial_menu_button.dart';
 import 'package:flutter_arc_speed_dial/main_menu_floating_action_button.dart';
@@ -22,8 +27,26 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  XFile? _pickedImage;
+  final User? currentUser = FirebaseAuth.instance.currentUser;
+
+  XFile? selectFile;
+  Uint8List? selectedImageInBytes;
   bool _isShowDial = false;
+  dynamic snapshot;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      snapshot = FirebaseFirestore.instance
+          .collection('machineries')
+          .where('uid', isEqualTo: currentUser!.uid)
+          .snapshots();
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,16 +79,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           CircleAvatar(
                             radius: 60,
-                                backgroundImage:
-
-                                 value.appUser!.profileUrl != null
-                                       ?
-                                        CachedNetworkImageProvider(
-
-                             // imageUrl:
-                               value.appUser!.profileUrl.toString(),
-                             // fit: BoxFit.cover,
-                            ):null,
+                            backgroundImage: value.appUser!.profileUrl != null
+                                ? CachedNetworkImageProvider(
+                                    // imageUrl:
+                                    value.appUser!.profileUrl.toString(),
+                                    // fit: BoxFit.cover,
+                                  )
+                                : null,
                             // :            NetworkImage(value.appUser!.profileUrl.toString()),
                             // imageUrl !=null || _pickedImage == null
                             //     ? NetworkImage(url)
@@ -76,38 +96,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             //   ),
                             //child:  imageUrl!=null?Image.network(imageUrl,fit: BoxFit.contain,):SizedBox()
                           ),
-                          TargetPlatform.kIsWeb
-                              ? SizedBox()
-                              : Positioned(
-                                  right: -5,
-                                  bottom: 0,
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.camera,
-                                      size: 35,
-                                      color: Colors.amber.shade900,
-                                    ),
-                                    onPressed: () async {
-                                      showModalBottomSheet(
-                                          //isDismissible: true,
-                                          context: context,
-                                          builder: (context) {
-                                            return imageDialogue(
-                                              context,
-                                              onSelect: (file) {
-                                                // log(file.path.toString());
-                                                setState(() {
-                                                  _pickedImage = file;
-                                                });
-                                                value.changeImage(image: file);
-                                                Navigator.pop(context);
-                                              },
-                                            );
+                          // TargetPlatform.kIsWeb
+                          //     ? SizedBox()
+                          //     :
+                          Positioned(
+                            right: -5,
+                            bottom: 0,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.camera,
+                                size: 35,
+                                color: Colors.amber.shade900,
+                              ),
+                              onPressed: () async {
+                                showModalBottomSheet(
+                                    //isDismissible: true,
+                                    context: context,
+                                    builder: (context) {
+                                      return imageDialogue(
+                                        context,
+                                        onSelect: (file) {
+                                          // log(file.path.toString());
+
+                                          if (TargetPlatform.kIsWeb) {
+                                            selectedImageInBytes = file.item2;
+                                            log("message");
+                                          } else {
+                                            // _pickedImage = file.item1;
+                                            selectFile = file.item1;
+                                          }
+                                          setState(() {
+                                            // log(selectFile!.name);
                                           });
-                                      // Navigator.pop(context);
-                                    },
-                                  ),
-                                ),
+                                          // setState(() {
+                                          //   _pickedImage = file;
+                                          // });
+                                          !kIsWeb
+                                              ? value.changeImage(
+                                                  image: selectFile)
+                                              : value.changeImageOnWeb(
+                                                  image: selectedImageInBytes!);
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                    });
+                                // Navigator.pop(context);
+                              },
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 20),
@@ -134,8 +170,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 ListTile(
-                  leading: Icon(Icons.construction_outlined),
-                  title: Text('Machineries'),
+                  leading: const Icon(Icons.construction_outlined,color: Colors.orange),
+                  title: const Text('Registered Machineries'),
                   onTap: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (ctx) {
@@ -144,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.lock),
+                  leading: Icon(Icons.lock,color: Colors.orange),
                   title: Text('Change Password'),
                   onTap: () {
                     Navigator.of(context)
@@ -152,13 +188,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.language),
+                  leading: Icon(Icons.language,color: Colors.orange),
                   title: Text('Language'),
                   subtitle:
                       Text(context.read<AuthController>().appUser!.languages),
                 ),
                 ListTile(
-                  leading: Icon(Icons.logout),
+                  leading: Icon(Icons.logout,color: Colors.orange),
                   title: Text('Log Out'),
                   onTap: () {
                     context.read<AuthController>().signOut(context);

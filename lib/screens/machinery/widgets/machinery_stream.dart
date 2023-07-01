@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,7 @@ class MachineryStream extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection("machineries")
-          .orderBy("dateAdded", descending: false)
+          .orderBy("rating", descending: true)
           .snapshots(),
       builder: (context, snapshot) {
         final data = snapshot.data?.docs

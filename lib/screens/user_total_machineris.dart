@@ -24,6 +24,8 @@ class MachineryListScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }else if(snapshot.data!.docs.isEmpty){
+            return const Center(child: Text("Not Regestered Any Machinery"),);
           }
 
           final List<DocumentSnapshot> documents = snapshot.data!.docs;

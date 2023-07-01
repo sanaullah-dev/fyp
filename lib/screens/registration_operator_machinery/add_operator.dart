@@ -1,12 +1,10 @@
 // ignore: file_names
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/helper.dart';
-import 'package:vehicle_management_and_booking_system/models/operator_model.dart';
 import 'package:flutter/foundation.dart' as TargetPlatform;
 import 'package:vehicle_management_and_booking_system/utils/image_dialgue.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
@@ -36,7 +34,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
   final TextEditingController _locationController = TextEditingController();
 
   var _isGettingLocation = false;
-  var   _selectedAddress;
+  var _selectedAddress;
   var location;
   Uint8List? selectedImageInBytes;
   XFile? _pickedImage;
@@ -70,8 +68,15 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 60,
+
+                  backgroundImage: !TargetPlatform.kIsWeb &&
+                          _pickedImage != null
+                      ? FileImage(File(_pickedImage!.path))
+                      : selectedImageInBytes != null
+                          ? MemoryImage(selectedImageInBytes!) as ImageProvider
+                          : null, //_pickedImage!=null? AssetImage(_pickedImage!.path.toString()):MemoryImage(bytes),
 
                   // :            NetworkImage(value.appUser!.profileUrl.toString()),
                   // imageUrl !=null || _pickedImage == null
@@ -86,7 +91,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                 Positioned(
                   //right: 0,
                   bottom: 0,
-                  left: screenHeight(context) * 0.1,
+                  left: screenHeight(context) * 0.09,
                   child: IconButton(
                     icon: Icon(
                       Icons.camera,
@@ -102,10 +107,21 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                               context,
                               onSelect: (file) {
                                 // log(file.path.toString());
+
+                                if (TargetPlatform.kIsWeb) {
+                                  selectedImageInBytes = file.item2;
+                                  //log("message");
+                                } else {
+                                  // _pickedImage = file.item1;
+                                  _pickedImage = file.item1;
+                                }
                                 setState(() {
-                                  _pickedImage = file;
+                                  // log(selectFile!.name);
                                 });
-                                //value.changeImage(image: file);
+                                // setState(() {
+                                //   _pickedImage = file;
+                                // });
+
                                 Navigator.pop(context);
                               },
                             );
@@ -140,7 +156,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             ),
             const SizedBox(height: 10.0),
             TextFormField(
-             // initialValue: _selectedAddress.isNotEmpty ? _selectedAddress.toString():null,
+              // initialValue: _selectedAddress.isNotEmpty ? _selectedAddress.toString():null,
               controller: _locationController,
               decoration: InputDecoration(
                 labelText: 'Location',
@@ -284,7 +300,8 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _certificatesController,
-              decoration: const InputDecoration(labelText: 'Certificates'),
+              decoration:
+                  const InputDecoration(labelText: 'Certificates (Optional)'),
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Please enter certificate details';

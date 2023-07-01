@@ -1,12 +1,14 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart' as TargetPlatform;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:vehicle_management_and_booking_system/utils/const.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:latlong2/latlong.dart' as latlong;
 
 // ignore: must_be_immutable
 class MapScreen extends StatefulWidget {
@@ -18,10 +20,12 @@ class MapScreen extends StatefulWidget {
   static var isCheck = false;
 
   @override
+  // ignore: library_private_types_in_public_api
   _MapScreenState createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
+ 
   List<Marker> _markers = [];
   List<Marker> markers = [];
   // final latlong.Distance distance = const latlong.Distance();
@@ -63,6 +67,13 @@ class _MapScreenState extends State<MapScreen> {
       _markers = markersSnapshot.docs
           .map(
             (doc) => Marker(
+              icon: !TargetPlatform.kIsWeb
+                  ? BitmapDescriptor.fromBytes(
+                      MapIcons.markerIcon,
+                    )
+                  : MapIcons.destinationIcon,
+              //icon: BitmapDescriptor.fromBytes(markerIcon),
+              //  icon:   BitmapDescriptor.fromAssetImage(createLocalImageConfiguration(context,size: Size(10, 10)), "assets/images/axcevator/excavator.png") ,
               markerId: MarkerId(doc['machineryId']),
               position: LatLng(
                   doc['location']['latitude'], doc['location']['longitude']),
@@ -78,8 +89,11 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
+      (timeStamp) async {
+        MapIcons.  setCustomMarkerIcon(context);
         _getMarkers();
+        MapIcons.markerIcon = await MapIcons.getBytesFromAsset(
+            'assets/images/axcevator/excavator1.png', 100);
       },
     );
 
@@ -104,25 +118,15 @@ class _MapScreenState extends State<MapScreen> {
               child: CircularProgressIndicator(),
             )
           : GoogleMap(
-              //zoomControlsEnabled: true,
+              zoomGesturesEnabled: true,
+              zoomControlsEnabled: true,
+
               // mapType: MapType.normal,
               myLocationEnabled: TargetPlatform.kIsWeb ? false : true,
               myLocationButtonEnabled: true,
               onMapCreated: _onMapCreated,
               initialCameraPosition: CameraPosition(target: _center, zoom: 11),
               markers: Set<Marker>.of(_markers),
-              // markers: {
-              //   const Marker(
-              //       markerId: MarkerId("ali"),
-              //       position: LatLng(34.052736, 71.426322)),
-              //    Marker(
-              //      icon: BitmapDescriptor.defaultMarkerWithHue(85),
-              //   // infoWindow: InfoWindow.noText,
-
-              //       markerId: const MarkerId("Sanii"),
-              //       position: const LatLng(34.020365, 71.550513)),
-
-              // },
             ),
     );
   }

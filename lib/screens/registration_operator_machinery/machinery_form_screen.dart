@@ -7,12 +7,10 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart' as geocoding;
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 // ignore: depend_on_referenced_packages
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 // ignore: library_prefixes
@@ -42,8 +40,21 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
   var _isGettingLocation = false;
   String? _selectedAddress;
   final List<File> _images = [];
+  final List<Uint8List> _webImages = [];
   // ignore: prefer_typing_uninitialized_variables
   late Location location;
+
+  void _getWebImage() async {
+    // if (!TargetPlatform.kIsWeb) {
+    var fileResult = await FilePicker.platform.pickFiles(type: FileType.image);
+    if (fileResult != null) {
+      final img = fileResult.files.first.bytes;
+      setState(() {
+        _webImages.add(img!);
+        //log("message");
+      });
+    }
+  }
 
   void _getImage(ImageSource source) async {
     // if (!TargetPlatform.kIsWeb) {
@@ -123,16 +134,12 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                       icon: const Icon(Icons.my_location),
                       onPressed: () async {
                         _isGettingLocation = true;
-                        setState(() {
-                          
-                        });
+                        setState(() {});
                         var results = await Helper.getCurrentLocation();
                         _selectedAddress = results.item1;
                         location = results.item2;
                         _isGettingLocation = false;
-                        setState(() {
-                          
-                        });
+                        setState(() {});
                       }),
                 ),
                 readOnly: true,
@@ -201,14 +208,16 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
               ),
               const SizedBox(height: 16.0),
               const Text('Images'),
-              if (_images.isNotEmpty && !TargetPlatform.kIsWeb)
+              if (_images.isNotEmpty || _webImages.isNotEmpty)
                 SizedBox(
                   height: 80.0,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: _images.length,
+                    itemCount: !TargetPlatform.kIsWeb
+                        ? _images.length
+                        : _webImages.length,
                     itemBuilder: (BuildContext context, int index) {
-                      log(_images[index].path);
+                      //log(_images[index].path);
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: (!TargetPlatform.kIsWeb)
@@ -218,8 +227,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                 height: 70.0,
                                 fit: BoxFit.cover,
                               )
-                            : Image.memory(
-                                Uint8List.fromList(_images.last as Uint8List)),
+                            : Image.memory(_webImages[index]),
                       );
                     },
                   ),
@@ -227,13 +235,17 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  !TargetPlatform.kIsWeb
+                      ? ElevatedButton.icon(
+                          onPressed: () => _getImage(ImageSource.camera),
+                          icon: const Icon(Icons.camera_alt),
+                          label: const Text('Camera'),
+                        )
+                      : const SizedBox(),
                   ElevatedButton.icon(
-                    onPressed: () => _getImage(ImageSource.camera),
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text('Camera'),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () => _getImage(ImageSource.gallery),
+                    onPressed: () => !TargetPlatform.kIsWeb
+                        ? _getImage(ImageSource.gallery)
+                        : _getWebImage(),
                     icon: const Icon(Icons.photo),
                     label: const Text('Gallery'),
                   ),
@@ -272,6 +284,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 try {
+                                  double ratingValue = 0.0;
                                   var curruntUser =
                                       context.read<AuthController>().appUser!;
                                   var machine = MachineryModel(
@@ -289,18 +302,20 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                     emergencyNumber:
                                         _emergencyNumberController.text,
                                     dateAdded: Timestamp.now(),
-                                    rating: 0.0,
+                                    rating: ratingValue,
                                     location: location,
                                   );
 
-                                  _images.isNotEmpty
+                                  _images.isNotEmpty || _webImages.isNotEmpty
                                       ? await context
                                           .read<
                                               MachineryRegistrationController>()
                                           .uploadMachinery(context,
                                               details: machine,
-                                              images: _images,
-                                              collection: "machineries")
+                                              images: !TargetPlatform.kIsWeb
+                                                  ? _images
+                                                  : _webImages,
+                                              collection: "machinery")
                                       : throw Exception("Images Required");
                                   log("SANA");
                                   _descriptionCOntroller.clear();
