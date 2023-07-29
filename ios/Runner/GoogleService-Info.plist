@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>467918462056-74iabu6u171v70s1ejjp7161ai91k8in.apps.googleusercontent.com</string>
+	<string>467918462056-uvblro65flbihfue11gj4t0ruipqp922.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.467918462056-74iabu6u171v70s1ejjp7161ai91k8in</string>
+	<string>com.googleusercontent.apps.467918462056-uvblro65flbihfue11gj4t0ruipqp922</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBuU46dRhsxkac77tjR845ovJuXmo-Sd8s</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.vehicleManagementAndBookingSystem</string>
+	<string>com.sanii.vehicleManagementAndBookingSystem</string>
 	<key>PROJECT_ID</key>
 	<string>vmbs-2c700</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:467918462056:ios:5945af559372c0c79d2fdd</string>
+	<string>1:467918462056:ios:8bbf46f9cd99d7189d2fdd</string>
+	<key>DATABASE_URL</key>
+	<string>https://vmbs-2c700-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>
