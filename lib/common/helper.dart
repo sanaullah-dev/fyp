@@ -15,16 +15,14 @@ class Helper {
   //  bool _isGettingLocation = false;
 
   static String getFormattedDateTime(DateTime date) {
-    return "${date.day}-${date.month}-${date.year} ${getFormattedTime(date)}";
+    return "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year} ${getFormattedTime(date)}";
   }
 
   static String getFormattedTime(DateTime date) {
     return DateFormat('hh:mm a').format(date);
   }
 
-  
-
-  static Future<Tuple2<List<String>, dynamic>>getCurrentLocation(
+  static Future<Tuple2<List<String>, dynamic>> getCurrentLocation(
       {required bool operator}) async {
     List<String> selectedAddress = [];
     String title;
@@ -57,10 +55,15 @@ class Helper {
 
     const apiKey = 'AIzaSyAXGWwbvlDHQzc13kITch4lvsL7TnWEm3c';
     final url =
-        //'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lon&key=$apiKey';
-     'https://maps.googleapis.com/maps/api/geocode/json?latlng=34.053444,71.584913&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lon&key=$apiKey';
+    // 'https://maps.googleapis.com/maps/api/geocode/json?latlng=34.053444,71.584913&key=$apiKey';
     log(url.toString());
     log(url);
+    // final url2 =
+    //     "https://maps.googleapis.com/maps/api/directions/json?origin=34.0326183,71.605875&destination=34.0277326,71.6024996&key=AIzaSyDyCtN4KYInCI8NXHKvYNVq4YPNk7e8o70";
+    // final response2 = await http.get(Uri.parse(url2));
+    // final data2 = jsonDecode(response2.body);
+    // log(data2.toString());
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {

@@ -1,45 +1,95 @@
-import 'dart:developer';
+// ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/db/database.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
+import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
+import 'package:vehicle_management_and_booking_system/screens/common/block_screen.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
+import 'dart:math' as math;
 
 class AuthController extends ChangeNotifier {
   UserModel? appUser;
   final AuthDB _db = AuthDB();
-  final MachineryRegistrationController _machine = MachineryRegistrationController();
+  final MachineryRegistrationController _machine =
+      MachineryRegistrationController();
+  final OperatorRegistrationController _operatorRegistrationController =
+      OperatorRegistrationController();
   // ignore: prefer_typing_uninitialized_variables
-  dynamic position;
+  Position? position;
+  bool? verified;
+  bool isloading = false;
+  double? pstrength;
+
+  void setLoading(bool value) {
+    isloading = value;
+    notifyListeners();
+  }
+
+  void verifiedUnverified(bool status) {
+    verified = status;
+    notifyListeners();
+  }
+
   Future<User?> checkCurrentUser(BuildContext context) async {
     try {
-      await Geolocator.requestPermission();
-
-     position = await Geolocator.getCurrentPosition(
-         desiredAccuracy: LocationAccuracy.bestForNavigation);
-        
+     // log("1");
+      
+       //await Geolocator.requestPermission();
+//log("3");
+      position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+//log("5");
       final currentUser = _db.isCurrentUser();
       if (currentUser != null) {
+        // await _machine.getAllMachineries();
+        // await _operatorRegistrationController
+        //     .getNearestAndHighestRatedOperator(); log("2");
         appUser = await _db.getUserById(currentUser.uid);
         log(appUser!.toJson().toString());
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacementNamed(context, AppRouter.bottomNavigationBar);
+        log("1");
+        updateFcm();
+        // await context
+        //     .read<MachineryRegistrationController>()
+        //     .getAllMachineries();
+        //context.read<RequestController>().getRequestIfActive(appUser!.uid);
+        // var request = await context
+        //     .read<RequestController>()
+        //     .getRequestIfActive(appUser!.uid);
+        // if (request != null) {
+        //  Navigator.pushNamed(context, AppRouter.trackOrder);
+        // }
+        await context.read<MachineryRegistrationController>().fetchAllUsers();
+        await context.read<MachineryRegistrationController>().getAllMachineries();
+
+
+        appUser!.blockOrNot == true
+            ? Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+                return BlockScreen(
+                  user: appUser!,
+                );
+              })))
+            : Navigator.pushReplacementNamed(
+                context, AppRouter.bottomNavigationBar);
         return currentUser;
         // Get user data from database
         // route to home screen
       } else {
-        // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, AppRouter.login);
         return null;
       }
     } catch (e) {
+      log(e.toString());
       rethrow;
     }
   }
@@ -53,22 +103,26 @@ class AuthController extends ChangeNotifier {
     try {
       // pd.show(max: 100, msg: "Please wait...");
       appUser = await _db.signInWithEmailAndPassword(email, password);
-      // ignore: use_build_context_synchronously
       //pd.close();
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop();
-      // ignore: use_build_context_synchronously
-      log("1");
-      // ignore: use_build_context_synchronously
-      Navigator.pushReplacementNamed(context, AppRouter.bottomNavigationBar);
-      log("2");
-      // ignore: use_build_context_synchronously
 
-      // ignore: use_build_context_synchronously
+      log("1");
+      updateFcm();
+      await context.read<MachineryRegistrationController>().getAllMachineries();
+      Navigator.of(context).pop();
+      appUser!.blockOrNot == true
+          ? Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+              return BlockScreen(
+                user: appUser!,
+              );
+            })))
+          : Navigator.pushReplacementNamed(
+              context, AppRouter.bottomNavigationBar);
+      log("2");
+
       showSnackBarMessage('Login successfully', context);
     } on FirebaseAuthException catch (e) {
-    //  log("11211 ${e.code}");
-     // log("2233${e.message!}");
+      //  log("11211 ${e.code}");
+      // log("2233${e.message!}");
       log("Error in controller: $e");
       showSnackBarMessage('Error Login: ${e.message}', context);
       Navigator.of(context).pop();
@@ -85,7 +139,6 @@ class AuthController extends ChangeNotifier {
   }
 
   Future<void> createWithEmailAndPassword(
-    
     BuildContext context, {
     required UserModel user,
     required String password,
@@ -96,9 +149,10 @@ class AuthController extends ChangeNotifier {
 
       await _db.signUpWithEmailAndPassword(user: user, password: password);
       appUser = user;
-      pd.close();
 
-      // ignore: use_build_context_synchronously
+      updateFcm();
+      await context.read<MachineryRegistrationController>().getAllMachineries();
+      pd.close();
       Navigator.pushReplacementNamed(context, AppRouter.bottomNavigationBar);
       log("Now current User: ${appUser?.toJson().toString()}");
       notifyListeners();
@@ -111,7 +165,6 @@ class AuthController extends ChangeNotifier {
   Future<void> signOut(BuildContext context) async {
     await _db.signOut();
     appUser = null;
-    // ignore: use_build_context_synchronously
     Navigator.pushNamedAndRemoveUntil(
         context, AppRouter.login, (route) => false);
   }
@@ -163,5 +216,87 @@ class AuthController extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
+  }
+
+  void updateFcm() async {
+    appUser!.fcm = await FirebaseMessaging.instance.getToken() ?? "";
+    _db.updateUser(user: appUser!);
+  }
+
+  Future<UserModel> getByUid(String userId) async {
+    try {
+      return await _db.getUserById(userId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateUserForBlock(UserModel user) async {
+    try {
+      await _db.updateUser(user: user);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+//   getPasswordStrength(String password) {
+//     if (password.isEmpty) return 0;
+//     double pFraction;
+
+//     if (RegExp(r'^[a-zA-Z0-9]*$').hasMatch(password)) {
+//       pFraction = 0.8;
+//     } else if (RegExp(r'^[a-zA-Z0-9]*$').hasMatch(password)) {
+//       pFraction = 1.5;
+//     } else if (RegExp(r'^[a-z]*$').hasMatch(password)) {
+//       pFraction = 1.0;
+//     } else if (RegExp(r'^[a-zA-Z]*$').hasMatch(password)) {
+//       pFraction = 1.3;
+//     } else if (RegExp(r'^[a-z\-_!?]*$').hasMatch(password)) {
+//       pFraction = 1.3;
+//     } else if (RegExp(r'^[a-z0-9]*$').hasMatch(password)) {
+//       pFraction = 1.2;
+//     } else {
+//       pFraction = 1.8;
+//     }
+
+//     var logF = (double x) {
+//       return 1.0 / (1.0 + mt.exp(-x));
+//     };
+
+//     var logC = (double x) {
+//       return logF((x / 2.0) - 4.0);
+//     };
+
+//     pstrength = logC(password.length * pFraction);
+//     notifyListeners();
+//   }
+
+  double getPasswordStrength(String password) {
+    if (password.isEmpty) return 0.0;
+    double pFraction;
+
+    if (RegExp(r'^[a-zA-Z0-9]*$').hasMatch(password)) {
+      pFraction = 0.8;
+    } else if (RegExp(r'^[a-z]*$').hasMatch(password)) {
+      pFraction = 1.0;
+    } else if (RegExp(r'^[a-zA-Z]*$').hasMatch(password)) {
+      pFraction = 1.3;
+    } else if (RegExp(r'^[a-z\-_!?]*$').hasMatch(password)) {
+      pFraction = 1.3;
+    } else if (RegExp(r'^[a-z0-9]*$').hasMatch(password)) {
+      pFraction = 1.2;
+    } else {
+      pFraction = 1.8;
+    }
+
+    double logF(double x) {
+      return 1.0 / (1.0 + math.exp(-x));
+    }
+
+    double logC(double x) {
+      return logF((x / 2.0) - 4.0);
+    }
+
+    return logC(password.length * pFraction);
   }
 }

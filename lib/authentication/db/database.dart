@@ -102,5 +102,14 @@ class AuthDB {
     }
   }
 
-
+// Future<void> updateUser(MachineryModel machine, bool value) async {
+//     try {
+//       DocumentReference machineryRef =
+//           _firestore.collection("machineries").doc(machine.machineryId);
+//       await machineryRef.update({'isAvailable': value});
+//       print("Updated machine: ${machine.machineryId} with value: $value");
+//     } catch (e) {
+//       log(e.toString());
+//     }
+//   }
 }

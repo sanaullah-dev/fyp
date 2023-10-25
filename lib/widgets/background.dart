@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vehicle_management_and_booking_system/screens/login_signup/fade_animation.dart';
 
 class Background extends StatelessWidget {
   final Widget child;
@@ -25,38 +26,40 @@ class Background extends StatelessWidget {
             left: 0,
             child: Image.asset(
               "assets/images/top1.png",
-             fit: BoxFit.cover,
+              fit: BoxFit.cover,
               //width: size.width,
-
             ),
           ),
           Positioned(
             top: 0,
             right: 0,
             left: 0,
-
             child: Image.asset(
               "assets/images/top2.png",
-              fit: BoxFit.cover,             // width: size.width
+              fit: BoxFit.cover, // width: size.width
             ),
           ),
           Positioned(
             top: 50,
             right: 5,
-            child: Container(
-              decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.orangeAccent.withOpacity(0.80),
-                width: 0.5,
-              ),
-            ),
-              child: const FittedBox(
-                fit: BoxFit.cover,
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Colors.transparent,
-                  backgroundImage: AssetImage('assets/images/main.png',
+            child: FadeAnimation(
+              delay: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.orangeAccent.withOpacity(0.80),
+                    width: 0.5,
+                  ),
+                ),
+                child: const FittedBox(
+                  fit: BoxFit.cover,
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: AssetImage(
+                      'assets/images/main.png',
+                    ),
                   ),
                 ),
               ),

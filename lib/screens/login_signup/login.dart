@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
+import 'package:vehicle_management_and_booking_system/screens/login_signup/fade_animation.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/forgot_password.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 import 'package:vehicle_management_and_booking_system/widgets/background.dart';
@@ -16,27 +17,39 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final _key = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obsecure = true;
 
-  showLoaderDialog(BuildContext context){
-    AlertDialog alert=AlertDialog(
-      content:  Row(
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: Row(
         children: [
-         const CircularProgressIndicator.adaptive(),
-          Container(margin: const EdgeInsets.only(left: 7),child: const Text("Loading..." )),
-        ],),
+          const CircularProgressIndicator.adaptive(),
+          Container(
+              margin: const EdgeInsets.only(left: 7),
+              child: const Text("Loading...")),
+        ],
+      ),
     );
-    showDialog(barrierDismissible: false,
-      context:context,
-     // barrierColor: Colors.transparent,
-      builder:(BuildContext context){
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      // barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
         return alert;
       },
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Size size = MediaQuery.of(context).size;
@@ -55,144 +68,173 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
-                      child: const Text(
-                        "LOGIN",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: TargetPlatform.kIsWeb
-                                ? Color.fromARGB(255, 255, 177, 41)
-                                : Color(0xFF2661FA),
-                            fontSize: 36),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
+                    FadeAnimation(
+                        delay: 1.6,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: const Text(
+                            "LOGIN",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: TargetPlatform.kIsWeb
+                                    ? Color.fromARGB(255, 255, 177, 41)
+                                    : Color(0xFF2661FA),
+                                fontSize: 36),
+                            textAlign: TextAlign.left,
+                          ),
+                        )),
                     SizedBox(height: screenHeight(context) * 0.03),
-                    Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.symmetric(horizontal: 40),
-                      child: TextFormField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                            labelStyle: TextStyle(fontSize: 18),
-                            labelText: "Email"),
-                        validator: (value) {
-                          final expression = RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+                    FadeAnimation(
+                      delay: 2,
+                      child: Container(
+                        alignment: Alignment.center,
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        child: TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                              labelStyle: TextStyle(fontSize: 18),
+                              labelText: "Email"),
+                          validator: (value) {
+                            final expression = RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
-                          if (!expression.hasMatch(value!)) {
-                            return "The email is invalid.";
-                          }
-                          return null;
-                        },
+                            if (!expression.hasMatch(value!)) {
+                              return "The email is invalid.";
+                            }
+                            return null;
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(height: screenHeight(context) * 0.03),
-                    Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.symmetric(horizontal: 40),
-                      child: TextFormField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        obscuringCharacter: "*",
-                        validator: (value) {
-                          if (value!.length < 6) {
-                            return "Password is too short!";
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                            labelStyle: TextStyle(fontSize: 18),
-                            labelText: "Password"),
+                    FadeAnimation(
+                      delay: 2.6,
+                      child: Container(
+                        alignment: Alignment.center,
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        child: TextFormField(
+                          controller: _passwordController,
+                          obscureText: _obsecure,
+                          obscuringCharacter: "*",
+                          validator: (value) {
+                            if (value!.length < 6) {
+                              return "Password is too short!";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.zero,
+                            labelStyle: const TextStyle(fontSize: 18),
+                            labelText: "Password",
+                            suffix: IconButton(
+                              onPressed: () {
+                                _obsecure = !_obsecure;
+                                setState(() {});
+                              },
+                              icon: _obsecure
+                                  ? const Icon(Icons.visibility,)
+                                  : const Icon(Icons.visibility_off),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 10),
-                      child:  InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                            return const ForgotPasswordScreen();
-                          }));
-                        },
-                        child: const  Text(
-                          "Forgot your password?",
-                          style:
-                              TextStyle(fontSize: 15, color: Color(0XFF2661FA)),
+                    FadeAnimation(
+                      delay: 3,
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 10),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return const ForgotPasswordScreen();
+                            }));
+                          },
+                          child: const Text(
+                            "Forgot your password?",
+                            style: TextStyle(
+                                fontSize: 15, color: Color(0XFF2661FA)),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: screenHeight(context) * 0.05),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 10),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (_key.currentState!.validate()) {
-                          showLoaderDialog(context);
-                            log(_emailController.text);
-                            log(_passwordController.text);
-                            await context
-                                .read<AuthController>()
-                                .loginWithEmailAndPassword(
-                                  context,
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                );
-                              
-                             //Navigator.of(context).pop();
-                            //.pushNamed(AppRouter.bottomNavigationBar);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(80.0)),
+                    FadeAnimation(
+                      delay: 3.6,
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 10),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_key.currentState!.validate()) {
+                              showLoaderDialog(context);
+                              log(_emailController.text);
+                              log(_passwordController.text);
+                              await context
+                                  .read<AuthController>()
+                                  .loginWithEmailAndPassword(
+                                    context,
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
+                                  );
+
+                              //Navigator.of(context).pop();
+                              //.pushNamed(AppRouter.bottomNavigationBar);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(80.0)),
+                              padding: const EdgeInsets.all(0),
+                              textStyle: const TextStyle(color: Colors.white)),
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50.0,
+                            width: 200,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(80.0),
+                                gradient: const LinearGradient(colors: [
+                                  Color.fromARGB(255, 255, 136, 34),
+                                  Color.fromARGB(255, 255, 177, 41)
+                                ])),
                             padding: const EdgeInsets.all(0),
-                            textStyle: const TextStyle(color: Colors.white)),
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 50.0,
-                          width: 200,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(80.0),
-                              gradient: const LinearGradient(colors: [
-                                Color.fromARGB(255, 255, 136, 34),
-                                Color.fromARGB(255, 255, 177, 41)
-                              ])),
-                          padding: const EdgeInsets.all(0),
-                          child: const Text(
-                            "LOGIN",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 19, fontWeight: FontWeight.bold),
+                            child: const Text(
+                              "LOGIN",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 19, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 10),
-                      child: GestureDetector(
-                        onTap: () => {
-                          Navigator.of(context).pushNamed(AppRouter.signUp),
-                        },
-                        child: const Text(
-                          "Don't Have an Account? Sign up",
-                          style: TextStyle(
-                            fontSize: 12,
-                            //fontWeight: FontWeight.bold,
-                            color: Color(0XFF2661FA),
+                    FadeAnimation(
+                      delay: 4,
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 10),
+                        child: GestureDetector(
+                          onTap: () => {
+                            Navigator.of(context).pushNamed(AppRouter.signUp),
+                          },
+                          child: const Text(
+                            "Don't Have an Account? Sign up",
+                            style: TextStyle(
+                              fontSize: 12,
+                              //fontWeight: FontWeight.bold,
+                              color: Color(0XFF2661FA),
+                            ),
+                            //color: Color(0xFF2661FA)),
                           ),
-                          //color: Color(0xFF2661FA)),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

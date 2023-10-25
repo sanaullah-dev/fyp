@@ -25,6 +25,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="vehicle_management_and_booking_system">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyCtN4KYInCI8NXHKvYNVq4YPNk7e8o70"></script>
+
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
@@ -41,7 +43,38 @@
 </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLbJLS9F81c-2Qu1WcztJ2LdO10MgVCvk"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-messaging.js"></script>
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDyCtN4KYInCI8NXHKvYNVq4YPNk7e8o70",
+    authDomain: "vmbs-2c700.firebaseapp.com",
+    // ... other properties ...
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+<script src="main.dart" type="application/javascript"></script>
+<script>
+     if ('serviceWorker' in navigator) {
+        // Service workers are supported. Use them.
+        window.addEventListener('load', function () {
+          // ADD THIS LINE
+          navigator.serviceWorker.register('/firebase-messaging-sw.js');
+          // Wait for registration to finish before dropping the <script> tag.
+          // Otherwise, the browser will load the script multiple times,
+          // potentially different versions.
+          var serviceWorkerUrl = 'flutter_service_worker.js?v=' + serviceWorkerVersion;
+
+          //  ...
+        });
+    }
+</script>
 </head>
 <body>
   <script>

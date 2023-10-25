@@ -1,11 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:vehicle_management_and_booking_system/app/app.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
+import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
+import 'package:vehicle_management_and_booking_system/common/controllers/request_controller.dart';
 import 'package:vehicle_management_and_booking_system/models/machinery_model.dart';
 import 'package:flutter/foundation.dart' as TargetPlatform;
+import 'package:vehicle_management_and_booking_system/screens/common/widgets/machinery_favorite.dart';
+import 'package:vehicle_management_and_booking_system/screens/common/widgets/operator_favorite.dart';
 import 'package:vehicle_management_and_booking_system/screens/machinery/machinery_detials.dart';
+import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
+import 'package:vehicle_management_and_booking_system/utils/const.dart';
+import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 
 // ignore: must_be_immutable
 class MyFavoriteMachineriesState extends StatefulWidget {
@@ -18,14 +27,22 @@ class MyFavoriteMachineriesState extends StatefulWidget {
 
 class _MyFavoriteMachineriesStateState
     extends State<MyFavoriteMachineriesState> {
-  var documents;
+  var documentsForMachinery;
+  var documentsForOperators;
+
   bool? setIt;
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
-     // await context.read<MachineryRegistrationController>().getFavorites(userId);
-      documents =
-         await context.read<MachineryRegistrationController>().getFavorites(context.read<AuthController>().appUser!.uid);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // await context.read<MachineryRegistrationController>().getFavorites(userId);
+
+      documentsForMachinery = await context
+          .read<MachineryRegistrationController>()
+          .getFavoritesMachines(context.read<AuthController>().appUser!.uid);
+      // ignore: use_build_context_synchronously
+      documentsForOperators = await context
+          .read<OperatorRegistrationController>()
+          .getFavoritesOperators(context.read<AuthController>().appUser!.uid);
       setIt = true;
       setState(() {});
     });
@@ -34,66 +51,107 @@ class _MyFavoriteMachineriesStateState
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = ConstantHelper.darkOrBright(context);
     return Scaffold(
-      appBar: AppBar(),
-      body: setIt == null
-          ? const Center(
-              child: CircularProgressIndicator(),
+      appBar: AppBar(
+        title: Text(
+          "Favorites",
+          style: GoogleFonts.quantico(
+              fontWeight: FontWeight.w700,
+              color: isDark ? null : AppColors.blackColor),
+        ),
+        backgroundColor: isDark ? null : AppColors.accentColor,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              navigatorKey.currentState!.pop();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new_sharp,
+              color: isDark ? null : AppColors.blackColor,
+            )),
+      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     "Favorites",
+      //     style: GoogleFonts.quantico(fontWeight: FontWeight.w700),
+      //   ),
+      // ),
+      body: setIt != true
+          ? Center(
+              child: CircularProgressIndicator.adaptive(),
             )
-          : ListView.builder(
-              itemCount: documents.length,
-              itemBuilder: (context, index) {
-                final MachineryModel machine = documents[index];
-                // log(machine.toString());
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
+          : Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
                       onTap: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return DetalleWidget(model: machine);
-                        }));
-                        // TODO: Navigate to machinery detail screen
+                        context
+                            .read<RequestController>()
+                            .updateIsMachineryFavoritesScreen(value: true);
+                        setState(() {});
                       },
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 20.0,
-                        horizontal: 16.0,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: BorderSide(
-                          color: Colors.grey.shade400,
-                          width: 1.0,
-                        ),
-                      ),
-                      leading: CircleAvatar(
-                        radius: 30.0,
-                        backgroundColor: Colors.grey.shade100,
-                        backgroundImage: machine.images != null
-                            ? CachedNetworkImageProvider(
-                                machine.images!.last.toString(),
-                              )
+                      child: Container(
+                        height: 43,
+                        width: screenWidth(context) * 0.5,
+                        color: context
+                                .read<RequestController>()
+                                .isMachineryFavoritesScreen
+                            ? const Color.fromARGB(255, 193, 190, 190)
                             : null,
+                        child: Center(
+                            child: Text(
+                          "Machinery Favorites",
+                          style:
+                              GoogleFonts.quantico(fontWeight: FontWeight.w600),
+                        )),
                       ),
-                      title: Text(
-                        machine.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
-                        ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        context
+                            .read<RequestController>()
+                            .updateIsMachineryFavoritesScreen(value: false);
+                        setState(() {});
+                      },
+                      child: Container(
+                        height: 40,
+                        width: screenWidth(context) * 0.5,
+                        color: !context
+                                .read<RequestController>()
+                                .isMachineryFavoritesScreen
+                            ? Colors.grey
+                            : null,
+                        child: Center(
+                            child: Text(
+                          "Operator Favorites",
+                          style:
+                              GoogleFonts.quantico(fontWeight: FontWeight.w600),
+                        )),
                       ),
-                      subtitle: Text(
-                        machine.description,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14.0,
-                        ),
-                      ),
-                      trailing: Text("Rs. ${machine.charges}/h")),
-                );
-              },
+                    )
+                  ],
+                ),
+                context.read<RequestController>().isMachineryFavoritesScreen
+                    ? documentsForMachinery.isEmpty
+                        ? SizedBox(
+                            height: screenHeight(context) * 0.5,
+                            child: Center(
+                              child: Text("No Favorite Machinery"),
+                            ),
+                          )
+                        : machineryFavorite(documentsForMachinery, setIt)
+                    : documentsForOperators.isEmpty
+                        ? SizedBox(
+                            height: screenHeight(context) * 0.5,
+                            child: Center(
+                              child: Text("No Favorite Operators"),
+                            ),
+                          )
+                        : operatorFavorite(documentsForOperators, setIt),
+              ],
             ),
     );
   }

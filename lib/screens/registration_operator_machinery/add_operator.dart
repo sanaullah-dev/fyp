@@ -3,14 +3,18 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vehicle_management_and_booking_system/app/app.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/helper.dart';
 import 'package:flutter/foundation.dart' as TargetPlatform;
 import 'package:vehicle_management_and_booking_system/models/operator_model.dart';
+import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
+import 'package:vehicle_management_and_booking_system/utils/const.dart';
 import 'package:vehicle_management_and_booking_system/utils/image_dialgue.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 
@@ -63,10 +67,27 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = ConstantHelper.darkOrBright(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Operator'),
+        title: Text(
+          "Add Operator",
+          style: TextStyle(color: isDark ? null : Colors.black),
+        ),
+        backgroundColor: isDark ? null : AppColors.accentColor,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              navigatorKey.currentState!.pop();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new_sharp,
+              color: isDark ? null : AppColors.blackColor,
+            )),
       ),
+      // appBar: AppBar(
+      //   title: const Text('Add Operator'),
+      // ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -149,7 +170,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
               controller: _nameController,
               decoration: const InputDecoration(
                   labelText: 'Name',
-                  hintText: "SANA ULLAH",
+                  hintText: "Jhon",
                   border: OutlineInputBorder()),
               validator: (value) {
                 String pattern = r'^[0-9]+$';
@@ -162,19 +183,29 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             ),
             const SizedBox(height: 16),
             TextFormField(
-              maxLines: 10,
+              maxLines: 1,
               textAlign: TextAlign.justify,
               controller: _experienceController,
+              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                   labelText: 'Work Experience',
                   hintText:
-                      "Machine Operator \nJune 2015-July 2016 \nStatBlock, Louisville, KY \nManlamned daly logs of equermer usare muretance schedule, ankl minor magor accadens \nEnsared produt guanty mes customer seciacations with no handine errons \nOperated various machines and egaipment for metalworking such as roary table, punch press and stamp press",
-                  // floatingLabelBehavior: FloatingLabelBehavior.always,
+                      "1, 2, 3 years", // floatingLabelBehavior: FloatingLabelBehavior.always,
+
                   border: OutlineInputBorder()),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter
+                    .digitsOnly, // Only allow digits to be entered
+              ],
               //keyboardType: TextInputType.number,
               validator: (value) {
+                String pattern =
+                    r'^03\d{9}$'; // This assumes the number starts with '03' and has 11 digits.
+                RegExp regExp = RegExp(pattern);
                 if (value!.isEmpty) {
-                  return 'Please enter experience years';
+                  return 'Please enter a valid Wrok Experience';
+                } else if (!regExp.hasMatch(value)) {
+                  return 'Please enter a valid Wrok Experience';
                 }
                 return null;
               },
@@ -198,6 +229,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     PopupMenuButton<String>(
+                        color: isDark ? null : AppColors.accentColor,
                       // color: Colors.orange,
                       onSelected: (value) {
                         setState(() {
@@ -227,7 +259,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                     ),
                     IconButton(
                         icon: const Icon(
-                          Icons.my_location,
+                          Icons.my_location,color: Colors.orange,
                         ),
                         onPressed: () async {
                           _isGettingLocation = true;
@@ -281,12 +313,18 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                   labelText: 'Mobile Number',
                   border: OutlineInputBorder(),
                   hintText: "03XXXXXXXXX"),
+                  inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter
+                      .digitsOnly, // Only allow digits to be entered
+                ],
               keyboardType: TextInputType.phone,
               validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter a mobile number';
-                }
-                return null;
+                Pattern pattern = r'^(03[0-9]{2})([0-9]{7})$';
+                RegExp regex = RegExp(pattern.toString());
+                if (!regex.hasMatch(value!) || value.isEmpty)
+                  return 'Invalid mobile number';
+                else
+                  return null;
               },
             ),
             const SizedBox(height: 16),
@@ -299,10 +337,12 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                   hintText: "03XXXXXXXXX"),
               keyboardType: TextInputType.phone,
               validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter an emergency number';
-                }
-                return null;
+                Pattern pattern = r'^(03[0-9]{2})([0-9]{7})$';
+                RegExp regex = RegExp(pattern.toString());
+                if (!regex.hasMatch(value!) || value.isEmpty)
+                  return 'Invalid mobile number';
+                else
+                  return null;
               },
             ),
             const SizedBox(height: 16),
@@ -368,8 +408,12 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                   hintText: "xyz@gmail.com"),
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
+                String pattern = r'^[^@]+@[^@]+\.[^@]+$';
+                RegExp regExp = RegExp(pattern);
                 if (value!.isEmpty) {
-                  return 'Please enter an email address';
+                  return 'Please enter a valid email address';
+                } else if (!regExp.hasMatch(value)) {
+                  return 'Enter Valid Email Address';
                 }
                 return null;
               },
@@ -451,44 +495,42 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                         width: 100,
                         height: 40,
                         decoration: const BoxDecoration(
-                          color: Colors.blue,
+                          color: Colors.orange,
                           borderRadius: BorderRadius.all(
                             Radius.circular(10),
                           ),
                         ),
                         child: OutlinedButton(
                           onPressed: () async {
-                           
-
                             if (_formKey.currentState!.validate()) {
                               double ratingValue = 0.0;
                               try {
                                 final _currentUser =
-                                     context.read<AuthController>().appUser;
-                                // await _repo.isOperatorExists(
-                                //         uid: _currentUser!.uid)
-                                //     ?null: throw Exception("You are already registered One Operator");
-                                   
+                                    context.read<AuthController>().appUser;
+                                await context.read<OperatorRegistrationController>().isOperatorExists(
+                                        uid: _currentUser!.uid)
+                                    ?null: throw Exception("You are already registered One Operator");
 
                                 final operator_model = OperatorModel(
-                                  uid: _currentUser!.uid.toString(),
-                                  name: _nameController.text,
-                                  years: _experienceController.text,
-                                  fullAddress: _selectedAddress.toString(),
-                                  mobileNumber: _mobileNumberController.text,
-                                  emergencyNumber:
-                                      _emergencyNumberController.text,
-                                  gender: _genderController.text,
-                                  email: _emailController.text,
-                                  education: _educationController.text,
-                                  skills: _skillsController.text,
-                                  summaryOrDescription: _summaryController.text,
-                                  location: location,
-                                  //  operatorImage: null,
-                                  dateAdded: Timestamp.now(),
-                                  operatorId: const Uuid().v1(),
-                                  rating: ratingValue,
-                                );
+                                    uid: _currentUser!.uid.toString(),
+                                    name: _nameController.text,
+                                    years: _experienceController.text,
+                                    fullAddress: _selectedAddress.toString(),
+                                    mobileNumber: _mobileNumberController.text,
+                                    emergencyNumber:
+                                        _emergencyNumberController.text,
+                                    gender: _genderController.text,
+                                    email: _emailController.text,
+                                    education: _educationController.text,
+                                    skills: _skillsController.text,
+                                    summaryOrDescription:
+                                        _summaryController.text,
+                                    location: location,
+                                    //  operatorImage: null,
+                                    dateAdded: Timestamp.now(),
+                                    operatorId: const Uuid().v1(),
+                                    rating: ratingValue,
+                                    isAvailable: true);
 
                                 _pickedImage != null ||
                                         selectedImageInBytes != null
@@ -534,7 +576,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                                     ),
                                   ),
                                 );
-                                Navigator.pop(context);
+                                // Navigator.pop(context);
                               }
                             }
                           },
@@ -542,7 +584,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                             'Submit',
                             style: TextStyle(
                               fontSize: 18,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ),

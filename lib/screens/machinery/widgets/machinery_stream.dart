@@ -104,13 +104,18 @@
 //   }
 // }
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
+import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
+import 'package:vehicle_management_and_booking_system/common/controllers/request_controller.dart';
 import 'package:vehicle_management_and_booking_system/models/machinery_model.dart';
 import 'package:vehicle_management_and_booking_system/screens/machinery/gridview_card.dart';
 import 'package:flutter/foundation.dart' as TargetPlatform;
+import 'package:vehicle_management_and_booking_system/screens/machinery/widgets/shimmer.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 
@@ -124,7 +129,12 @@ class MachineryStream extends StatefulWidget {
 }
 
 class _MachineryStreamState extends State<MachineryStream> {
-  var appUser;
+  late final machineryController;
+  late final authController;
+  late final operatorController;
+  late final requestController;
+
+  // var _appUserUid;
 
   // double calculateDistance(
   //     Location location, double latitude, double longitude) {
@@ -192,17 +202,47 @@ class _MachineryStreamState extends State<MachineryStream> {
   List<MachineryModel>? machines;
   @override
   void initState() {
-    // TODO: implement initState
-    machines = context.read<MachineryRegistrationController>().allMachineries;
-    appUser = context.read<AuthController>().appUser!.uid;
+    machineryController = context.read<MachineryRegistrationController>();
+    authController = context.read<AuthController>();
+    operatorController = context.read<OperatorRegistrationController>();
+    requestController = context.read<RequestController>();
+
+    if (machineryController.allMachineries != null) {
+      machines = [
+        ...machineryController.allMachineries!
+            .where((machine) =>
+                machine.uid != authController.appUser!.uid )
+                // &&
+                // machine!.isAvailable != false)
+            .toList()
+      ];
+    }
+
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) async {
-        // await context.read<MachineryRegistrationController>().getAllMachineries();
-        await context.read<MachineryRegistrationController>().fetchAllUsers();
+      //  await machineryController.getAllMachineries();
+        log("print1");
+        await machineryController.fetchAllUsers();
+        if (mounted) {
+          // Future.delayed(const Duration(seconds: 2), () async {
+          await context.read<RequestController>().checkActiveRequest(context);
+          // ignore: use_build_context_synchronously
+          await context
+              .read<MachineryRegistrationController>()
+              .getAllRequests();
+          //  });
 
-        MapIcons.setCustomMarkerIcon(context);
-        MapIcons.markerIcon = await MapIcons.getBytesFromAsset(
-            'assets/images/axcevator/excavator1.png', 100);
+          await operatorController.getNearestAndHighestRatedOperator();
+          // ignore: use_build_context_synchronously
+          await MapIcons.setAllMarker(context);
+          MapIcons.markerIcon = await MapIcons.getBytesFromAsset(
+              'assets/images/axcevator/excavator1.png', 100, 100);
+          MapIcons.markerForDark = await MapIcons.getBytesFromAsset(
+              'assets/images/axcevator/excavatorForDark.png', 100, 100);
+          // if (mounted) {
+          //   await requestController.checkActiveRequest(context);
+          // }
+        }
       },
     );
     super.initState();
@@ -210,75 +250,48 @@ class _MachineryStreamState extends State<MachineryStream> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-        itemCount: machines!.length,
-        //  shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: TargetPlatform.kIsWeb
-              ? 0.7
-              : screenHeight(context) > 700
-                  ? 0.55
-                  : 0.6, //(itemWidth / itemHeight),
+    return context.read<MachineryRegistrationController>().allMachineries ==
+            null
+        ? SkeletonMachineryWidget()
+        : GridView.builder(
+            itemCount: machines!.length,
+            //  shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              childAspectRatio: TargetPlatform.kIsWeb
+                  ? 0.7
+                  : screenHeight(context) > 700
+                      ? 0.55
+                      : 0.6, //(itemWidth / itemHeight),
 
-          // shrinkWrap: true,
-          crossAxisCount: 2, //size.width > 770 ? 4 : 2,
-          // crossAxisSpacing: 2,
-          // mainAxisSpacing: 5,
-        ),
-        itemBuilder: (ctx, index) {
-          // dev.log(docs[index].data().toString());
-          final machinery = machines![index];
+              // shrinkWrap: true,
+              crossAxisCount: 2, //size.width > 770 ? 4 : 2,
+              // crossAxisSpacing: 2,
+              // mainAxisSpacing: 5,
+            ),
+            itemBuilder: (ctx, index) {
+              // dev.log(docs[index].data().toString());
+              final machinery = machines![index];
+              // ignore: unnecessary_null_comparison
+              if (machinery == null) {
+                return null;
+              }
+              //dev.log(machinery.model.toString());
 
-          //dev.log(machinery.model.toString());
-
-          //  log(index.toString());
-          // data.add(data[index] );
-          //data.add(MachineryModel(machineryId: "machineryId", uid: "uid", name: "name", title: "title", model: "model", address: "address", description: "description", size: 626, charges: 21, emergencyNumber: "emergencyNumber", dateAdded: Timestamp.now(), rating:2.1, location: Location(title: "title", latitude: 21.22222, longitude: 31.2222)));
-          // log(data[index].toString());
-          return SingleMachineryWidget(
-            machineryDetails: machinery,
-          );
-        });
+              //  log(index.toString());
+              // data.add(data[index] );
+              //data.add(MachineryModel(machineryId: "machineryId", uid: "uid", name: "name", title: "title", model: "model", address: "address", description: "description", size: 626, charges: 21, emergencyNumber: "emergencyNumber", dateAdded: Timestamp.now(), rating:2.1, location: Location(title: "title", latitude: 21.22222, longitude: 31.2222)));
+              // log(data[index].toString());
+              return SingleMachineryWidget(
+                machineryDetails: machinery,
+              );
+            });
 
     //   case ConnectionState.done:
     //     return const SizedBox();
     // }
   }
+  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import 'dart:math';
 // import 'dart:developer' as dev;
@@ -378,10 +391,9 @@ class _MachineryStreamState extends State<MachineryStream> {
 //     machines = context.read<MachineryRegistrationController>().allMachineries;
 //     appUser = context.read<AuthController>().appUser!.uid;
 //     WidgetsBinding.instance.addPostFrameCallback(
-//       (timeStamp) async {  
+//       (timeStamp) async {
 //         // await context.read<MachineryRegistrationController>().getAllMachineries();
 //          await   context.read<MachineryRegistrationController>().fetchAllUsers();
-          
 
 //         MapIcons.setCustomMarkerIcon(context);
 //         MapIcons.markerIcon = await MapIcons.getBytesFromAsset(

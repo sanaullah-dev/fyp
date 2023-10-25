@@ -4,9 +4,13 @@ import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
+import 'package:vehicle_management_and_booking_system/common/controllers/request_controller.dart';
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  
+
+   MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -37,32 +41,34 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => MachineryRegistrationController(),
         ),
-        
         ChangeNotifierProvider(
           create: (context) => OperatorRegistrationController(),
-          
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (context) => RequestController(),
+        ),
       ],
       child: MaterialApp(
         title: 'VMBS',
-
-       
-         theme: ThemeData(
-        // Define your light theme here
-        primarySwatch: Colors.blue,
-         visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      darkTheme: ThemeData(
-        // Define your dark theme here
-        brightness: Brightness.dark,
-      ),
-      themeMode: ThemeMode.system, // Set the themeMode to system
-
-        // home: SignUpScreen(),
-      //  home: MachineryFormScreen(),
+        navigatorKey: navigatorKey,
+        debugShowCheckedModeBanner: false,
+        
+        theme: ThemeData(
+          // Define your light theme here
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        darkTheme: ThemeData(
+          // Define your dark theme here
+          brightness: Brightness.dark,
+        ),
+        themeMode: ThemeMode.system, // Set the themeMode to system
+        //home: TrackOrder(),
+        //home: SignUpScreen(),
+        //home: MachineryFormScreen(),
         //home: MachineryDetail(machineryDetails: machineryDetails),
-       // home: const MachineryFormScreen(),
-       //home: MapScreen(title: "title"),
+        //home: const MachineryFormScreen(),
+        //home: MapScreen(title: "title"),
         onGenerateRoute: (settings) {
           return AppRouter.onGenerateScreen(settings);
         },

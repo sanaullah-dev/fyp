@@ -15,29 +15,38 @@ class OperatorModel {
   String skills;
   //String certificates;
   String summaryOrDescription;
-
   Timestamp dateAdded;
   dynamic rating;
   Locations location;
+  bool isAvailable;
+  List<RatingForOperator>? allRatings; // Add this
+  bool? isHired;
+  List<HiringRecordForOperator>? hiringRecordForOperator; // Add this
+  // String HirerUid;
 
-  OperatorModel(
-      {required this.operatorId,
-      required this.uid,
-      required this.fullAddress,
-      this.operatorImage,
-      required this.name,
-      required this.years,
-      required this.mobileNumber,
-      required this.emergencyNumber,
-      required this.gender,
-      required this.email,
-      required this.education,
-      required this.skills,
-      //required this.certificates,
-      required this.summaryOrDescription,
-      required this.dateAdded,
-      required this.rating,
-      required this.location});
+  OperatorModel({
+    required this.operatorId,
+    required this.uid,
+    required this.fullAddress,
+    this.operatorImage,
+    required this.name,
+    required this.years,
+    required this.mobileNumber,
+    required this.emergencyNumber,
+    required this.gender,
+    required this.email,
+    required this.education,
+    required this.skills,
+    //required this.certificates,
+    required this.summaryOrDescription,
+    required this.dateAdded,
+    required this.rating,
+    required this.location,
+    required this.isAvailable,
+    this.allRatings,
+    this.hiringRecordForOperator,
+    this.isHired,
+  });
 
   factory OperatorModel.fromJson(Map<String, dynamic> json) {
     return OperatorModel(
@@ -58,6 +67,17 @@ class OperatorModel {
       dateAdded: json['dateAdded'],
       rating: json['rating'],
       location: Locations.fromJson(json['location']),
+      isAvailable: json['isAvailable'],
+      allRatings: (json['allRatings'] as List<dynamic>?)
+          ?.map((e) => RatingForOperator.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      hiringRecordForOperator:
+          (json['hiringRecordForOperator'] as List<dynamic>?)
+              ?.map((e) =>
+                  HiringRecordForOperator.fromJson(e as Map<String, dynamic>))
+              .toList(),
+
+isHired: json['isHired'],
     );
   }
 
@@ -82,6 +102,11 @@ class OperatorModel {
       // ignore: equal_keys_in_map
       'location': location.toJson(),
       "rating": rating,
+      "isAvailable": isAvailable,
+      'allRatings': allRatings?.map((e) => e.toJson()).toList(),
+      'hiringRecordForOperator':
+          hiringRecordForOperator?.map((e) => e.toJson()).toList(),
+          'isHired': isHired,
     };
   }
 }
@@ -109,5 +134,61 @@ class Locations {
         'title': title,
         'latitude': latitude,
         'longitude': longitude,
+      };
+}
+
+class RatingForOperator {
+  final String userId; // User's unique identifier
+  final double value; // Rating value given by the user (e.g., 4.5 out of 5)
+  final Timestamp date;
+  final String comment; // Date when the user rated
+
+  RatingForOperator({
+    required this.userId,
+    required this.value,
+    required this.date,
+    required this.comment,
+  });
+
+  factory RatingForOperator.fromJson(Map<String, dynamic> json) {
+    return RatingForOperator(
+      userId: json['userId'],
+      value: (json['value'] as num).toDouble(),
+      comment: json['comment'],
+      date: json['date'],
+    );
+  }
+
+  Map<String, dynamic> toJson() =>
+      {'userId': userId, 'value': value, 'date': date, 'comment': comment};
+}
+
+class HiringRecordForOperator {
+  final String hirerUid; // User's unique identifier
+  final String requestId;
+  final Timestamp startDate; // Rating value given by the user (e.g., 4.5 out of 5)
+   Timestamp? endDate;
+
+  HiringRecordForOperator({
+    required this.hirerUid,
+    required this.requestId,
+    required this.startDate,
+     this.endDate,
+  });
+
+  factory HiringRecordForOperator.fromJson(Map<String, dynamic> json) {
+    return HiringRecordForOperator(
+      hirerUid: json['hirerUid'],
+      requestId: json['requestId'],
+      startDate: json['startDate'],
+      endDate: json['endDate'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'hirerUid': hirerUid,
+        'requestId': requestId,
+        'startDate': startDate,
+        'endDate': endDate,
       };
 }

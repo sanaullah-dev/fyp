@@ -1,7 +1,10 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:vehicle_management_and_booking_system/app/app.dart';
+import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
+import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
+import 'package:vehicle_management_and_booking_system/utils/const.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -15,12 +18,22 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _oldPasswordController = TextEditingController();
-  final _newPasswordController = TextEditingController();
+  late final TextEditingController _newPasswordController =
+      TextEditingController();
+  // ..addListener(() {
+  //   setState(() {
+  //     passwordStrength = context
+  //         .read<AuthController>()
+  //         .getPasswordStrength(_newPasswordController.text);
+  //   });
+  // });
+
   final _confirmPasswordController = TextEditingController();
   bool _isOldPasswordVisible = false;
   bool _isNewPasswordVisible = false;
   bool _isConfirmNewPasswordVisible = false;
   bool _isLoading = false;
+  double passwordStrength = 0.0;
 
   @override
   void dispose() {
@@ -28,6 +41,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _newPasswordController.addListener(() {
+      setState(() {
+        passwordStrength = context.read<AuthController>().getPasswordStrength(
+            _newPasswordController.text); // Replace this with your method
+      });
+    });
   }
 
   void _togglePasswordVisibility(
@@ -117,11 +142,28 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = ConstantHelper.darkOrBright(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Change Password'),
+        title: Text(
+          "Change Password",
+          style: TextStyle(color: isDark ? null : Colors.black),
+        ),
+        backgroundColor: isDark ? null : AppColors.accentColor,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              navigatorKey.currentState!.pop();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new_sharp,
+              color: isDark ? null : AppColors.blackColor,
+            )),
       ),
+      // appBar: AppBar(
+      //   title: const Text('Change Password'),
+      // ),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
@@ -163,30 +205,56 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   controller: _newPasswordController,
                   obscureText: !_isNewPasswordVisible,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     hintText: "xxxxxxxx",
                     labelText: 'New Password',
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        _isNewPasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                       onPressed: () {
+                        icon: Icon(
+                          _isNewPasswordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
                           _togglePasswordVisibility(
                             oldPassword: null,
                             newpassword: true,
                             confirmNewPassword: null,
                           );
-                        }
-                    ),
+                        }),
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'New password is required';
                     }
-                    return null;
+                    double strength = context
+                        .read<AuthController>()
+                        .getPasswordStrength(value);
+                    if (strength < 0.2) {
+                      return 'Password is very weak';
+                    } else if (strength < 0.4) {
+                      return 'Password is weak';
+                    } else if (strength < 0.6) {
+                      return 'Password is medium';
+                    } else if (strength < 0.8) {
+                      return 'Password is strong';
+                    } else {
+                      return null; // Password is very strong
+                    }
                   },
+                ),
+                LinearProgressIndicator(
+                  value: passwordStrength,
+                  backgroundColor: Colors.grey[200],
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(passwordStrength < 0.2
+                          ? Colors.red
+                          : passwordStrength < 0.4
+                              ? Colors.orange
+                              : passwordStrength < 0.6
+                                  ? Colors.amber
+                                  : passwordStrength < 0.8
+                                      ? Colors.lightGreen
+                                      : Colors.green),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
@@ -197,19 +265,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     hintText: "xxxxxxxx",
                     labelText: 'Confirm New Password',
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        _isConfirmNewPasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                     onPressed: () {
+                        icon: Icon(
+                          _isConfirmNewPasswordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
                           _togglePasswordVisibility(
                             oldPassword: null,
                             newpassword: null,
                             confirmNewPassword: true,
                           );
-                        }
-                    ),
+                        }),
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -223,10 +290,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
                 const SizedBox(height: 40),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      //elevation: 20,
+                      backgroundColor: isDark
+                          ? AppColors.primaryColor
+                          : AppColors.accentColor,
+                      side: BorderSide(
+                          width: 0.5,
+                          color: isDark ? Colors.white : Colors.orange)),
                   onPressed: _isLoading ? null : _changePassword,
                   child: _isLoading
                       ? const CircularProgressIndicator()
-                      : const Text('Change Password'),
+                      : Text(
+                          'Change Password',
+                          style: TextStyle(color: isDark ? null : Colors.black),
+                        ),
                 ),
               ],
             ),

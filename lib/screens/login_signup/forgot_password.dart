@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vehicle_management_and_booking_system/app/app.dart';
+import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
+import 'package:vehicle_management_and_booking_system/utils/const.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -43,13 +46,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+   bool isDark = ConstantHelper.darkOrBright(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Forgot Password',
-          style: GoogleFonts.changa(),
+     appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(onPressed: (){
+          navigatorKey.currentState!.pop();
+
+        },icon:  Icon(Icons.arrow_back_ios_new_rounded,color:  isDark ? null :AppColors.blackColor,),),
+        backgroundColor: isDark ? null : AppColors.accentColor,
+        title:  Text(
+          "Forgot Password",
+          style: GoogleFonts.changa(color: isDark ? null : AppColors.blackColor),// TextStyle(color: isDark ? null : AppColors.blackColor),
         ),
       ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     'Forgot Password',
+      //     style: GoogleFonts.changa(),
+      //   ),
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -84,12 +100,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
              style: GoogleFonts.raleway(), ),
               const SizedBox(height: 16.0),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isDark?null:AppColors.accentColor,
+                ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _sendPasswordResetEmail();
                   }
                 },
-                child:  Text('Send Reset Link', style: GoogleFonts.raleway(),),
+                child:  Text('Send Reset Link', style: GoogleFonts.raleway(color: isDark ? null : AppColors.blackColor),),
               ),
               if (_errorMessage != null)
                 Padding(

@@ -5,17 +5,20 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 // ignore: library_prefixes
 import 'package:flutter/foundation.dart' as TargetPlatform;
+import 'package:vehicle_management_and_booking_system/app/app.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/helper.dart';
 import 'package:vehicle_management_and_booking_system/models/machinery_model.dart';
+import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
+import 'package:vehicle_management_and_booking_system/utils/const.dart';
 
 class MachineryFormScreen extends StatefulWidget {
   const MachineryFormScreen({super.key});
@@ -92,9 +95,23 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = ConstantHelper.darkOrBright(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Machinery'),
+        title: Text(
+          "Add Machinery",
+          style: TextStyle(color: isDark ? null : Colors.black),
+        ),
+        backgroundColor: isDark ? null : AppColors.accentColor,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              navigatorKey.currentState!.pop();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new_sharp,
+              color: isDark ? null : AppColors.blackColor,
+            )),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -152,7 +169,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       PopupMenuButton<String>(
-                        // color: Colors.orange,
+                        color: isDark ? null : AppColors.accentColor,
                         onSelected: (value) {
                           setState(() {
                             _selectedAddress = value;
@@ -164,6 +181,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                             // No addresses are available. Return a list with a single item.
                             return [
                               const PopupMenuItem<String>(
+                                //  textStyle: TextStyle(color: Colors.white),
                                 value: 'No addresses available',
                                 child: Text('No addresses available'),
                               ),
@@ -172,6 +190,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                             // Generate the menu entries dynamically based on the addresses.
                             return addresses.map((String address) {
                               return PopupMenuItem<String>(
+                                // textStyle: TextStyle(color: Colors.black),
                                 value: address,
                                 child: Text(address),
                               );
@@ -180,8 +199,9 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                         },
                       ),
                       IconButton(
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.my_location,
+                            color: isDark ? null : AppColors.accentColor,
                           ),
                           onPressed: () async {
                             _isGettingLocation = true;
@@ -201,7 +221,9 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
               if (_isGettingLocation)
                 const Padding(
                   padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.orange,
+                  ),
                 ),
               if (_selectedAddress != null)
                 Padding(
@@ -232,6 +254,10 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                     labelText: 'Per Hour Charges',
                     border: OutlineInputBorder(),
                     hintText: "4000, 6000, any"),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter
+                      .digitsOnly, // Only allow digits to be entered
+                ],
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter hourly charges';
@@ -265,14 +291,16 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                     border: OutlineInputBorder(),
                     hintText: "03XX-XXXXXXX"),
                 validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter emergency number';
-                  }
-                  return null;
+                  Pattern pattern = r'^(03[0-9]{2})([0-9]{7})$';
+                  RegExp regex = RegExp(pattern.toString());
+                  if (!regex.hasMatch(value!) || value.isEmpty)
+                    return 'Invalid mobile number';
+                  else
+                    return null;
                 },
               ),
               const SizedBox(height: 16.0),
-              const Text('Images'),
+              const Text('Select Images'),
               if (_images.isNotEmpty || _webImages.isNotEmpty)
                 SizedBox(
                   height: 80.0,
@@ -296,33 +324,38 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                     fit: BoxFit.cover,
                                   ),
                                   Positioned(
-                                    right:  -20,
-                                    top:  -15,
-                            
+                                    right: -20,
+                                    top: -15,
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
                                             _images.removeAt(index);
                                           });
                                         },
-                                        icon: Icon(Icons.cancel_outlined,color: Colors.red,)),
+                                        icon: Icon(
+                                          Icons.cancel_outlined,
+                                          color: Colors.red,
+                                        )),
                                   )
                                 ],
                               )
                             : Stack(
-                              clipBehavior: Clip.none,
+                                clipBehavior: Clip.none,
                                 children: [
                                   Image.memory(_webImages[index]),
                                   Positioned(
-                                     right:  -20,
-                                    top:  -15,
+                                    right: -20,
+                                    top: -15,
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
                                             _webImages.removeAt(index);
                                           });
                                         },
-                                        icon: Icon(Icons.cancel_outlined,color: Colors.red,)),
+                                        icon: Icon(
+                                          Icons.cancel_outlined,
+                                          color: Colors.red,
+                                        )),
                                   )
                                 ],
                               ),
@@ -334,18 +367,41 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   !TargetPlatform.kIsWeb
-                      ? ElevatedButton.icon(
+                      ? OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                  color: isDark
+                                      ? Colors.transparent
+                                      : AppColors.accentColor)),
                           onPressed: () => _getImage(ImageSource.camera),
-                          icon: const Icon(Icons.camera_alt),
-                          label: const Text('Camera'),
+                          icon: Icon(
+                            Icons.camera_alt,
+                            color: isDark ? null : AppColors.accentColor,
+                          ),
+                          label: Text(
+                            'Camera',
+                            style: TextStyle(
+                              color: isDark ? null : AppColors.accentColor,
+                            ),
+                          ),
                         )
                       : const SizedBox(),
-                  ElevatedButton.icon(
+                  TextButton.icon(
                     onPressed: () => !TargetPlatform.kIsWeb
-                        ? _getImage(ImageSource.gallery)
+                        ? _getImage(
+                            ImageSource.gallery,
+                          )
                         : _getWebImage(),
-                    icon: const Icon(Icons.photo),
-                    label: const Text('Gallery'),
+                    icon: Icon(
+                      Icons.photo,
+                      color: isDark ? null : AppColors.accentColor,
+                    ),
+                    label: Text(
+                      'Gallery',
+                      style: TextStyle(
+                        color: isDark ? null : AppColors.accentColor,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -364,8 +420,8 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                       : Container(
                           width: 100,
                           height: 40,
-                          decoration: const BoxDecoration(
-                            color: Colors.blue,
+                          decoration: BoxDecoration(
+                            color: isDark ? null : AppColors.accentColor,
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
@@ -391,6 +447,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                     title: _titleController.text,
                                     model: _modelController.text,
                                     address: _selectedAddress.toString(),
+                                    isAvailable: true,
                                     description: _descriptionCOntroller.text,
                                     size: int.parse(_sizeController.text),
                                     charges:
@@ -414,6 +471,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                               collection: "machinery")
                                       : throw Exception("Images Required");
                                   log("SANA");
+                                  // provider.addLocal(machine);
                                   _descriptionCOntroller.clear();
                                   _emergencyNumberController.clear();
                                   _titleController.clear();
@@ -442,15 +500,15 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                       ),
                                     ),
                                   );
-                                  Navigator.pop(context);
+                                  // Navigator.pop(context);
                                 }
                               }
                             },
-                            child: const Text(
+                            child: Text(
                               "Submit",
                               style: TextStyle(
                                 fontSize: 18,
-                                color: Colors.white,
+                                color: isDark ? null : AppColors.blackColor,
                               ),
                             ),
                           ),

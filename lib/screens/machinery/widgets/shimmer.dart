@@ -93,6 +93,7 @@
 import 'package:flutter/foundation.dart' as TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:vehicle_management_and_booking_system/utils/const.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 
 class SkeletonMachineryWidget extends StatelessWidget {
@@ -102,6 +103,10 @@ class SkeletonMachineryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = ConstantHelper.darkOrBright(context);
+
+    Color baseColor = isDark ? Colors.grey[700]! : Colors.grey[300]!;
+    Color highlightColor = isDark ? Colors.grey[600]! : Colors.grey[100]!;
     return GridView.builder(
             itemCount: 10, // Assuming skeleton items
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -113,8 +118,8 @@ class SkeletonMachineryWidget extends StatelessWidget {
               crossAxisCount: 2,
             ),
             itemBuilder: (_, __) => Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
+              baseColor: baseColor,
+              highlightColor: highlightColor,
               child: Container(
                 margin: EdgeInsets.all(7.5),
                 child: Column(
