@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -44,7 +45,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forgot Password'),
+        title: Text(
+          'Forgot Password',
+          style: GoogleFonts.changa(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -56,9 +60,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                ),
+                decoration:  InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Your Email Address...',
+                    labelStyle: GoogleFonts.raleway(),
+                    hintStyle: GoogleFonts.raleway(),
+                    hintText: "Enter your email here..."),
                 validator: (value) {
                   if (value!.trim().isEmpty) {
                     return 'Please enter your email.';
@@ -68,6 +75,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   return null;
                 },
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                
+                "We will send you an email with a link to reset your password, please enter the email associated with your account above.",
+             style: GoogleFonts.raleway(), ),
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
@@ -75,7 +89,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     _sendPasswordResetEmail();
                   }
                 },
-                child: const Text('Send Password Reset Email'),
+                child:  Text('Send Reset Link', style: GoogleFonts.raleway(),),
               ),
               if (_errorMessage != null)
                 Padding(

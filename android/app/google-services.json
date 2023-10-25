@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "467918462056",
+    "firebase_url": "https://vmbs-2c700-default-rtdb.firebaseio.com",
     "project_id": "vmbs-2c700",
     "storage_bucket": "vmbs-2c700.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:467918462056:android:e4e16e6d4b9e4b919d2fdd",
+        "mobilesdk_app_id": "1:467918462056:android:d30549d98d6ead6b9d2fdd",
         "android_client_info": {
-          "package_name": "com.example.vehicle_management_and_booking_system"
+          "package_name": "com.sanii.vehicle_management_and_booking_system"
         }
       },
       "oauth_client": [

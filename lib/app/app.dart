@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
+import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -35,20 +36,33 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => MachineryRegistrationController(),
+        ),
+        
+        ChangeNotifierProvider(
+          create: (context) => OperatorRegistrationController(),
+          
         )
       ],
       child: MaterialApp(
         title: 'VMBS',
 
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
+       
+         theme: ThemeData(
+        // Define your light theme here
+        primarySwatch: Colors.blue,
+         visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      darkTheme: ThemeData(
+        // Define your dark theme here
+        brightness: Brightness.dark,
+      ),
+      themeMode: ThemeMode.system, // Set the themeMode to system
 
-          // brightness: Brightness.dark
-        ),
         // home: SignUpScreen(),
       //  home: MachineryFormScreen(),
         //home: MachineryDetail(machineryDetails: machineryDetails),
+       // home: const MachineryFormScreen(),
+       //home: MapScreen(title: "title"),
         onGenerateRoute: (settings) {
           return AppRouter.onGenerateScreen(settings);
         },

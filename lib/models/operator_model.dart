@@ -7,44 +7,44 @@ class OperatorModel {
   String years;
   String mobileNumber;
   String emergencyNumber;
-  String? profilePicture;
+  String? operatorImage;
   String gender;
+  String fullAddress;
   String email;
   String education;
   String skills;
-  String certificates;
+  //String certificates;
   String summaryOrDescription;
-  
+
   Timestamp dateAdded;
-  double rating;
-  Location location;
+  dynamic rating;
+  Locations location;
 
-  OperatorModel({
-    required this.operatorId,
-    required this.uid,
-   
-    this.profilePicture,
-    required this.name,
-    required this.years,
-    required this.mobileNumber,
-    required this.emergencyNumber,
-    required this.gender,
-    required this.email,
-    required this.education,
-    required this.skills,
-    required this.certificates,
-    required this.summaryOrDescription,
-    required this.dateAdded,
-    required this.rating,
-    required this.location
-
-  });
+  OperatorModel(
+      {required this.operatorId,
+      required this.uid,
+      required this.fullAddress,
+      this.operatorImage,
+      required this.name,
+      required this.years,
+      required this.mobileNumber,
+      required this.emergencyNumber,
+      required this.gender,
+      required this.email,
+      required this.education,
+      required this.skills,
+      //required this.certificates,
+      required this.summaryOrDescription,
+      required this.dateAdded,
+      required this.rating,
+      required this.location});
 
   factory OperatorModel.fromJson(Map<String, dynamic> json) {
     return OperatorModel(
+      fullAddress: json['fullAddress'],
       operatorId: json['operatorId'],
       uid: json['uid'],
-      profilePicture: json['profilePicture'],
+      operatorImage: json['operatorImage'],
       name: json['name'],
       years: json['years'],
       mobileNumber: json['mobileNumber'],
@@ -53,21 +53,21 @@ class OperatorModel {
       email: json['email'],
       education: json['education'],
       skills: json['skills'] ?? '',
-      certificates: json['certificates'],
+      //certificates: json['certificates'],
       summaryOrDescription: json['summaryOrDescription'],
-        dateAdded: json['dateAdded'],
-        rating: json['rating'],
-        location: Location.fromJson(json['location']),
-      
+      dateAdded: json['dateAdded'],
+      rating: json['rating'],
+      location: Locations.fromJson(json['location']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       "operatorId": operatorId,
+      "fullAddress": fullAddress,
       "uid": uid,
       'name': name,
-      "profilePicture": profilePicture,
+      "operatorImage": operatorImage,
       'location': location,
       'years': years,
       'mobileNumber': mobileNumber,
@@ -76,30 +76,29 @@ class OperatorModel {
       'email': email,
       'education': education,
       'skills': skills,
-      'certificates': certificates,
+      //'certificates': certificates,
       'summaryOrDescription': summaryOrDescription,
       "dateAdded": dateAdded,
-        // ignore: equal_keys_in_map
+      // ignore: equal_keys_in_map
       'location': location.toJson(),
       "rating": rating,
     };
   }
-
-  
 }
-class Location {
+
+class Locations {
   String title;
   double latitude;
   double longitude;
 
-  Location({
+  Locations({
     required this.title,
     required this.latitude,
     required this.longitude,
   });
 
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return Location(
+  factory Locations.fromJson(Map<String, dynamic> json) {
+    return Locations(
       title: json['title'],
       latitude: json['latitude'],
       longitude: json['longitude'],

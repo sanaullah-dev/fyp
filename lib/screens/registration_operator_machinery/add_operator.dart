@@ -1,11 +1,16 @@
 // ignore: file_names
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
+import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/helper.dart';
 import 'package:flutter/foundation.dart' as TargetPlatform;
+import 'package:vehicle_management_and_booking_system/models/operator_model.dart';
 import 'package:vehicle_management_and_booking_system/utils/image_dialgue.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 
@@ -29,13 +34,15 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _educationController = TextEditingController();
   final TextEditingController _skillsController = TextEditingController();
-  final TextEditingController _certificatesController = TextEditingController();
+  // final TextEditingController _certificatesController = TextEditingController();
   final TextEditingController _summaryController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
   var _isGettingLocation = false;
+  // ignore: prefer_typing_uninitialized_variables
   var _selectedAddress;
-  var location;
+  List<String> addresses = [];
+  late Locations location;
   Uint8List? selectedImageInBytes;
   XFile? _pickedImage;
 
@@ -49,7 +56,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
     _emailController.dispose();
     _educationController.dispose();
     _skillsController.dispose();
-    _certificatesController.dispose();
+    // _certificatesController.dispose();
     _summaryController.dispose();
     super.dispose();
   }
@@ -76,7 +83,10 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                       ? FileImage(File(_pickedImage!.path))
                       : selectedImageInBytes != null
                           ? MemoryImage(selectedImageInBytes!) as ImageProvider
-                          : null, //_pickedImage!=null? AssetImage(_pickedImage!.path.toString()):MemoryImage(bytes),
+                          : null,
+                  child: selectedImageInBytes == null && _pickedImage == null
+                      ? const Text("Profile Image")
+                      : null, //_pickedImage!=null? AssetImage(_pickedImage!.path.toString()):MemoryImage(bytes),
 
                   // :            NetworkImage(value.appUser!.profileUrl.toString()),
                   // imageUrl !=null || _pickedImage == null
@@ -132,21 +142,36 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                 ),
               ],
             ),
+            SizedBox(
+              height: 10,
+            ),
             TextFormField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
+              decoration: const InputDecoration(
+                  labelText: 'Name',
+                  hintText: "SANA ULLAH",
+                  border: OutlineInputBorder()),
               validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter a name';
+                String pattern = r'^[0-9]+$';
+                RegExp regExp = RegExp(pattern);
+                if (value!.isEmpty && regExp.hasMatch(value)) {
+                  return 'Please enter name';
                 }
                 return null;
               },
             ),
             const SizedBox(height: 16),
             TextFormField(
+              maxLines: 10,
+              textAlign: TextAlign.justify,
               controller: _experienceController,
-              decoration: const InputDecoration(labelText: 'Experience Years'),
-              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                  labelText: 'Work Experience',
+                  hintText:
+                      "Machine Operator \nJune 2015-July 2016 \nStatBlock, Louisville, KY \nManlamned daly logs of equermer usare muretance schedule, ankl minor magor accadens \nEnsared produt guanty mes customer seciacations with no handine errons \nOperated various machines and egaipment for metalworking such as roary table, punch press and stamp press",
+                  // floatingLabelBehavior: FloatingLabelBehavior.always,
+                  border: OutlineInputBorder()),
+              //keyboardType: TextInputType.number,
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Please enter experience years';
@@ -156,24 +181,88 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             ),
             const SizedBox(height: 10.0),
             TextFormField(
-              // initialValue: _selectedAddress.isNotEmpty ? _selectedAddress.toString():null,
+              //initialValue: "Press location and popupMenuButton",
+
               controller: _locationController,
               decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                // prefixText: "Press my location",
+                helperText: _selectedAddress == null
+                    ? "Press location and popupMenuButton to get accurate location"
+                    : null,
+                // border: OutlineInputBorder(),
+                hintText: "abc,Islamabad,Pakistan",
                 labelText: 'Location',
-                suffixIcon: IconButton(
-                    icon: const Icon(Icons.my_location),
-                    onPressed: () async {
-                      _isGettingLocation = true;
-                      setState(() {});
-                      var results = await Helper.getCurrentLocation();
-                      _selectedAddress = results.item1;
-                      location = results.item2;
-                      _isGettingLocation = false;
-                      setState(() {});
-                    }),
+                suffixIcon: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    PopupMenuButton<String>(
+                      // color: Colors.orange,
+                      onSelected: (value) {
+                        setState(() {
+                          _selectedAddress = value;
+                        });
+                      },
+                      itemBuilder: (BuildContext context) {
+                        // ignore: unnecessary_null_comparison
+                        if (addresses.isEmpty) {
+                          // No addresses are available. Return a list with a single item.
+                          return [
+                            const PopupMenuItem<String>(
+                              value: 'No addresses available',
+                              child: Text('No addresses available'),
+                            ),
+                          ];
+                        } else {
+                          // Generate the menu entries dynamically based on the addresses.
+                          return addresses.map((String address) {
+                            return PopupMenuItem<String>(
+                              value: address,
+                              child: Text(address),
+                            );
+                          }).toList();
+                        }
+                      },
+                    ),
+                    IconButton(
+                        icon: const Icon(
+                          Icons.my_location,
+                        ),
+                        onPressed: () async {
+                          _isGettingLocation = true;
+                          setState(() {});
+                          var results =
+                              await Helper.getCurrentLocation(operator: true);
+                          addresses = results.item1;
+                          location = results.item2;
+                          _isGettingLocation = false;
+                          setState(() {});
+                        }),
+                  ],
+                ),
               ),
-              readOnly: false,
+              readOnly: true,
             ),
+            // TextFormField(
+            //   // initialValue: _selectedAddress.isNotEmpty ? _selectedAddress.toString():null,
+            //   controller: _locationController,
+            //   decoration: InputDecoration(
+            //     labelText: 'Location',
+            //     suffixIcon: IconButton(
+            //         icon: const Icon(Icons.my_location),
+            //         onPressed: () async {
+            //           _isGettingLocation = true;
+            //           setState(() {});
+            //           var results = await Helper.getCurrentLocation();
+            //           _selectedAddress = results.item1;
+            //           location = results.item2;
+            //           _isGettingLocation = false;
+            //           setState(() {});
+            //         }),
+            //   ),
+            //   readOnly: false,
+            // ),
             if (_isGettingLocation)
               const Padding(
                 padding: EdgeInsets.all(8.0),
@@ -188,7 +277,10 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _mobileNumberController,
-              decoration: const InputDecoration(labelText: 'Mobile Number'),
+              decoration: const InputDecoration(
+                  labelText: 'Mobile Number',
+                  border: OutlineInputBorder(),
+                  hintText: "03XXXXXXXXX"),
               keyboardType: TextInputType.phone,
               validator: (value) {
                 if (value!.isEmpty) {
@@ -200,7 +292,11 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _emergencyNumberController,
-              decoration: const InputDecoration(labelText: 'Emergency Number'),
+              decoration: const InputDecoration(
+                  helperText: "guardian or Family Member",
+                  labelText: 'Emergency Number',
+                  border: OutlineInputBorder(),
+                  hintText: "03XXXXXXXXX"),
               keyboardType: TextInputType.phone,
               validator: (value) {
                 if (value!.isEmpty) {
@@ -211,6 +307,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             ),
             const SizedBox(height: 16),
             TextFormField(
+              readOnly: true,
               controller: _genderController,
               // The validator checks if a gender has been selected
               validator: (value) {
@@ -221,6 +318,8 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
               },
               decoration: InputDecoration(
                 labelText: 'Gender',
+                hintText: "Male,Female,Other",
+                border: OutlineInputBorder(),
                 suffixIcon: PopupMenuButton<String>(
                   onSelected: (value) {
                     setState(() {
@@ -264,8 +363,9 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             TextFormField(
               controller: _emailController,
               decoration: const InputDecoration(
-                labelText: 'Email',
-              ),
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                  hintText: "xyz@gmail.com"),
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value!.isEmpty) {
@@ -277,7 +377,10 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _educationController,
-              decoration: const InputDecoration(labelText: 'Education'),
+              decoration: const InputDecoration(
+                  labelText: 'Education',
+                  border: OutlineInputBorder(),
+                  hintText: "Bachelor of Scence in Construction Management"),
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Please enter education details';
@@ -288,8 +391,11 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _skillsController,
-              decoration:
-                  const InputDecoration(labelText: 'Skills (Machinery)'),
+              decoration: const InputDecoration(
+                  labelText: 'Skills (Machinery)',
+                  hintText:
+                      "Front-end loader eperation Tractor-trailer operation",
+                  border: OutlineInputBorder()),
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Please enter skills information';
@@ -298,23 +404,27 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
               },
             ),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: _certificatesController,
-              decoration:
-                  const InputDecoration(labelText: 'Certificates (Optional)'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter certificate details';
-                }
-                return null;
-              },
-            ),
+            // TextFormField(
+            //   controller: _certificatesController,
+            //   decoration:
+            //       const InputDecoration(labelText: 'Certificates (Optional)'),
+            //   validator: (value) {
+            //     if (value!.isEmpty) {
+            //       return 'Please enter certificate details';
+            //     }
+            //     return null;
+            //   },
+            // ),
             const SizedBox(height: 16),
             TextFormField(
+              textAlign: TextAlign.justify,
               controller: _summaryController,
-              decoration:
-                  const InputDecoration(labelText: 'Summary/Description'),
-              maxLines: 5,
+              decoration: const InputDecoration(
+                  labelText: 'Summary/Description',
+                  hintText:
+                      "Dependable and safety-onerced heavy equipment operator with -i years of experience. At' ThrasherStorese, operated and maintained good working condition of 7 different vehicles, including front-end loaders, tractor trailers and forklifts. Handled ovilcedine ot up to 15 shigments dails. L.oolane to provide Paned.Co with my reliable slallace in operains machery.",
+                  border: OutlineInputBorder()),
+              maxLines: 10,
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Please enter a summary/description';
@@ -323,40 +433,122 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
               },
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                //   if (_formKey.currentState!.validate()) {
-                // try{
-                //   final _currentUser = context.read<AuthController>().appUser;
-                //     final operator_model = OperatorModel(
-                //       uid: _currentUser!.uid.toString(),
-                //       name: _nameController.text,
-                //       years: _experienceController.text,
-                //       mobileNumber: _mobileNumberController.text,
-                //       emergencyNumber: _emergencyNumberController.text,
-                //       gender: _genderController.text,
-                //       email: _emailController.text,
-                //       education: _educationController.text,
-                //       skills: _skillsController.text,
-                //       certificates: _certificatesController.text,
-                //       summaryOrDescription: _summaryController.text,
-                //       location:
-                //     );
-                // }catch(e){
-                //   ScaffoldMessenger.of(context).showSnackBar(
-                //                       SnackBar(
-                //                         content: Text(
-                //                           "There was an issue $e",
-                //                         ),
-                //                       ),
-                //                     );
-                //                     Navigator.pop(context);
-                // }
 
-                //   }
-              },
-              child: const Text('Submit'),
-            ),
+            Consumer<OperatorRegistrationController>(
+                builder: (context, value, _) {
+              return value.isLoading
+                  ? const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.amber,
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(bottom: 14.0),
+                      child: Container(
+                        width: 100,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        child: OutlinedButton(
+                          onPressed: () async {
+                           
+
+                            if (_formKey.currentState!.validate()) {
+                              double ratingValue = 0.0;
+                              try {
+                                final _currentUser =
+                                     context.read<AuthController>().appUser;
+                                // await _repo.isOperatorExists(
+                                //         uid: _currentUser!.uid)
+                                //     ?null: throw Exception("You are already registered One Operator");
+                                   
+
+                                final operator_model = OperatorModel(
+                                  uid: _currentUser!.uid.toString(),
+                                  name: _nameController.text,
+                                  years: _experienceController.text,
+                                  fullAddress: _selectedAddress.toString(),
+                                  mobileNumber: _mobileNumberController.text,
+                                  emergencyNumber:
+                                      _emergencyNumberController.text,
+                                  gender: _genderController.text,
+                                  email: _emailController.text,
+                                  education: _educationController.text,
+                                  skills: _skillsController.text,
+                                  summaryOrDescription: _summaryController.text,
+                                  location: location,
+                                  //  operatorImage: null,
+                                  dateAdded: Timestamp.now(),
+                                  operatorId: const Uuid().v1(),
+                                  rating: ratingValue,
+                                );
+
+                                _pickedImage != null ||
+                                        selectedImageInBytes != null
+                                    ? await context
+                                        .read<OperatorRegistrationController>()
+                                        .uploadOperator(
+                                          context,
+                                          details: operator_model,
+                                          image: !TargetPlatform.kIsWeb
+                                              ? File(_pickedImage!.path)
+                                              : selectedImageInBytes,
+                                        )
+                                    : throw Exception("Images Required");
+
+                                // ignore: use_build_context_synchronously
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Operator added"),
+                                  ),
+                                );
+                                // ignore: use_build_context_synchronously
+                                Navigator.pop(context);
+                                // log('UID: ${operator_model.uid}');
+                                // log('Name: ${operator_model.name}');
+                                // log('Years of Experience: ${operator_model.years}');
+                                // log('Mobile Number: ${operator_model.mobileNumber}');
+                                // log('Emergency Number: ${operator_model.emergencyNumber}');
+                                // log('Gender: ${operator_model.gender}');
+                                // log('Email: ${operator_model.email}');
+                                // log('Education: ${operator_model.education}');
+                                // log('Skills: ${operator_model.skills}');
+                                // log('Summary or Description: ${operator_model.summaryOrDescription}');
+                                // log('Location: ${operator_model.location.title}');
+                                // log('Date Added: ${operator_model.dateAdded}');
+                                // log('Operator ID: ${operator_model.operatorId}');
+                                // log('Rating: ${operator_model.rating}');
+                                // log('Rating: ${operator_model.fullAddress}');
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      "There was an issue $e",
+                                    ),
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              }
+                            }
+                          },
+                          child: const Text(
+                            'Submit',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+            }),
           ],
         ),
       ),

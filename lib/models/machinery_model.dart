@@ -4,8 +4,6 @@ class MachineryModel {
   MachineryModel({
     required this.machineryId,
     required this.uid,
-    required this.name,
-    this.profilePicture,
     required this.title,
     required this.model,
     required this.address,
@@ -17,11 +15,12 @@ class MachineryModel {
     required this.dateAdded,
     required this.rating,
     required this.location,
+    
   });
+
+ 
   String machineryId;
   String uid;
-  String name;
-  String? profilePicture;
   String title;
   String model;
   String address;
@@ -33,12 +32,11 @@ class MachineryModel {
   Timestamp dateAdded;
   dynamic rating;
   Location location;
+  var distance;
 
   factory MachineryModel.fromJson(Map<String, dynamic> json) => MachineryModel(
         machineryId: json['machineryId'],
         uid: json['uid'],
-        name: json['name'],
-        profilePicture: json['profilePicture'],
         title: json['title'],
         model: json['model'],
         address: json['address'],
@@ -56,8 +54,6 @@ class MachineryModel {
   Map<String, dynamic> toJson() => {
         "machineryId": machineryId,
         "uid": uid,
-        "name": name,
-        "profilePicture": profilePicture,
         'title': title,
         "model": model,
         'location': location,
@@ -76,8 +72,8 @@ class MachineryModel {
 
 class Location {
   String title;
-  double latitude;
-  double longitude;
+  dynamic latitude;
+  dynamic longitude;
 
   Location({
     required this.title,

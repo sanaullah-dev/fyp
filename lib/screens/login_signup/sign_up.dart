@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sn_progress_dialog/progress_dialog.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/login.dart';

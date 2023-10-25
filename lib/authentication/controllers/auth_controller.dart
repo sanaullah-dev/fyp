@@ -1,23 +1,30 @@
 import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/db/database.dart';
-import 'package:vehicle_management_and_booking_system/common/helper.dart';
+import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
 
 class AuthController extends ChangeNotifier {
   UserModel? appUser;
   final AuthDB _db = AuthDB();
-
+  final MachineryRegistrationController _machine = MachineryRegistrationController();
+  // ignore: prefer_typing_uninitialized_variables
+  dynamic position;
   Future<User?> checkCurrentUser(BuildContext context) async {
     try {
+      await Geolocator.requestPermission();
+
+     position = await Geolocator.getCurrentPosition(
+         desiredAccuracy: LocationAccuracy.bestForNavigation);
+        
       final currentUser = _db.isCurrentUser();
       if (currentUser != null) {
         appUser = await _db.getUserById(currentUser.uid);
@@ -28,6 +35,7 @@ class AuthController extends ChangeNotifier {
         // Get user data from database
         // route to home screen
       } else {
+        // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, AppRouter.login);
         return null;
       }
@@ -50,17 +58,20 @@ class AuthController extends ChangeNotifier {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
       // ignore: use_build_context_synchronously
+      log("1");
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, AppRouter.bottomNavigationBar);
-
+      log("2");
       // ignore: use_build_context_synchronously
 
       // ignore: use_build_context_synchronously
       showSnackBarMessage('Login successfully', context);
     } on FirebaseAuthException catch (e) {
-      log(e.code);
-      log(e.message!);
-      print("Error in controller: $e");
+    //  log("11211 ${e.code}");
+     // log("2233${e.message!}");
+      log("Error in controller: $e");
       showSnackBarMessage('Error Login: ${e.message}', context);
+      Navigator.of(context).pop();
       //   pd.close();
     }
   }
@@ -74,6 +85,7 @@ class AuthController extends ChangeNotifier {
   }
 
   Future<void> createWithEmailAndPassword(
+    
     BuildContext context, {
     required UserModel user,
     required String password,
@@ -91,7 +103,7 @@ class AuthController extends ChangeNotifier {
       log("Now current User: ${appUser?.toJson().toString()}");
       notifyListeners();
     } catch (e) {
-      print("Error in controller: $e");
+      log("Error in controller: $e");
       pd.close();
     }
   }
@@ -126,18 +138,18 @@ class AuthController extends ChangeNotifier {
       notifyListeners();
       if (pickedImage != null || pickedWebImage != null) {
         if (appUser!.profileUrl != null) {
-          await Helper.deleteImage(url: appUser!.profileUrl!);
+          await _db.deleteImage(url: appUser!.profileUrl!);
           appUser!.profileUrl = null;
         }
         appUser!.profileUrl = null;
         late String url;
         if (!kIsWeb) {
-          url = await Helper.uploadImage(
+          url = await _machine.uploadImage(
               id: appUser!.uid,
               file: pickedImage!,
               ref: "users/${appUser!.uid}/${const Uuid().v1()}");
         } else {
-          url = await Helper.uploadWebImage(
+          url = await _machine.uploadWebImage(
             id: appUser!.uid,
             file: pickedWebImage!,
             ref: "users/${appUser!.uid}/${const Uuid().v1()}",

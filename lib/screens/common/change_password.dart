@@ -1,6 +1,7 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:vehicle_management_and_booking_system/app/router.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -16,7 +17,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _isPasswordVisible = false;
+  bool _isOldPasswordVisible = false;
+  bool _isNewPasswordVisible = false;
+  bool _isConfirmNewPasswordVisible = false;
   bool _isLoading = false;
 
   @override
@@ -27,10 +30,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     super.dispose();
   }
 
-  void _togglePasswordVisibility() {
-    setState(() {
-      _isPasswordVisible = !_isPasswordVisible;
-    });
+  void _togglePasswordVisibility(
+      {required bool? oldPassword,
+      required bool? newpassword,
+      required bool? confirmNewPassword}) {
+    // setState(() {
+    //   _isPasswordVisible = !_isPasswordVisible;
+    // });
+    oldPassword != null
+        ? _isOldPasswordVisible = !_isOldPasswordVisible
+        : newpassword != null
+            ? _isNewPasswordVisible = !_isNewPasswordVisible
+            : _isConfirmNewPasswordVisible = !_isConfirmNewPasswordVisible;
+    setState(() {});
   }
 
   void showSnackBarMessage(String message) {
@@ -84,9 +96,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   setState(() {
                     _isLoading = false;
                   });
-                    
+
                   showSnackBarMessage('Password changed successfully');
-                 
                 } catch (error) {
                   setState(() {
                     _isLoading = false;
@@ -101,7 +112,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       },
     );
     //Navigator.pop(context);
-       //Navigator.of(context).pushNamed(AppRouter.bottomNavigationBar);
+    //Navigator.of(context).pushNamed(AppRouter.bottomNavigationBar);
   }
 
   @override
@@ -121,17 +132,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               children: [
                 TextFormField(
                   controller: _oldPasswordController,
-                  obscureText: !_isPasswordVisible,
+                  obscureText: !_isOldPasswordVisible,
                   decoration: InputDecoration(
                     labelText: 'Old Password',
+                    border: OutlineInputBorder(),
+                    hintText: "xxxxxxxx",
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: _togglePasswordVisibility,
-                    ),
+                        icon: Icon(
+                          _isOldPasswordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          _togglePasswordVisibility(
+                            oldPassword: true,
+                            newpassword: null,
+                            confirmNewPassword: null,
+                          );
+                        }),
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -143,16 +161,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _newPasswordController,
-                  obscureText: !_isPasswordVisible,
+                  obscureText: !_isNewPasswordVisible,
                   decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "xxxxxxxx",
                     labelText: 'New Password',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible
+                        _isNewPasswordVisible
                             ? Icons.visibility_off
                             : Icons.visibility,
                       ),
-                      onPressed: _togglePasswordVisibility,
+                       onPressed: () {
+                          _togglePasswordVisibility(
+                            oldPassword: null,
+                            newpassword: true,
+                            confirmNewPassword: null,
+                          );
+                        }
                     ),
                   ),
                   validator: (value) {
@@ -165,16 +191,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _confirmPasswordController,
-                  obscureText: !_isPasswordVisible,
+                  obscureText: !_isConfirmNewPasswordVisible,
                   decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "xxxxxxxx",
                     labelText: 'Confirm New Password',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible
+                        _isConfirmNewPasswordVisible
                             ? Icons.visibility_off
                             : Icons.visibility,
                       ),
-                      onPressed: _togglePasswordVisibility,
+                     onPressed: () {
+                          _togglePasswordVisibility(
+                            oldPassword: null,
+                            newpassword: null,
+                            confirmNewPassword: true,
+                          );
+                        }
                     ),
                   ),
                   validator: (value) {

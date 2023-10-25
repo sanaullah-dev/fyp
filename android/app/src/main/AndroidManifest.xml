@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.vehicle_management_and_booking_system">
+    package="com.sanii.vehicle_management_and_booking_system">
    <application
         android:label="vehicle_management_and_booking_system"
         android:name="${applicationName}"

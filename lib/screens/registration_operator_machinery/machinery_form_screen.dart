@@ -1,14 +1,11 @@
-// ignore_for_file: library_private_types_in_public_api
-
-import 'dart:convert';
 import 'dart:developer';
-
 //import 'dart:html' as html;
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/state_manager.dart';
 import 'package:image_picker/image_picker.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -39,6 +36,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
 
   var _isGettingLocation = false;
   String? _selectedAddress;
+  List<String> addresses = [];
   final List<File> _images = [];
   final List<Uint8List> _webImages = [];
   // ignore: prefer_typing_uninitialized_variables
@@ -64,6 +62,8 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
         _images.add(File(pickedFile.path));
         //log("message");
       });
+    } else {
+      log("No image selected.");
     }
     // } else {
     //   final input = html.FileUploadInputElement();
@@ -102,22 +102,31 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a title';
-                  }
-                  return null;
-                },
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: TextFormField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(
+                    hintText: "Doosan,Volvo,CAT",
+                    labelText: 'Title',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
+                ),
               ),
               const SizedBox(height: 16.0),
               TextFormField(
                 keyboardType: TextInputType.number,
                 controller: _modelController,
                 decoration: const InputDecoration(
-                    labelText: 'Model', hintText: "2001, 2010"),
+                    border: OutlineInputBorder(),
+                    labelText: 'Model',
+                    hintText: "2001, 2010"),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'write something about machinery model ';
@@ -127,20 +136,65 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
               ),
               const SizedBox(height: 16.0),
               TextFormField(
+                //initialValue: "Press location and popupMenuButton",
+
                 controller: _locationController,
                 decoration: InputDecoration(
+                  // prefixText: "Press my location",
+                  helperText: _selectedAddress == null
+                      ? "Press location and popupMenuButton to get accurate location"
+                      : null,
+                  border: OutlineInputBorder(),
+                  hintText: "abc,Islamabad,Pakistan",
                   labelText: 'Location',
-                  suffixIcon: IconButton(
-                      icon: const Icon(Icons.my_location),
-                      onPressed: () async {
-                        _isGettingLocation = true;
-                        setState(() {});
-                        var results = await Helper.getCurrentLocation();
-                        _selectedAddress = results.item1;
-                        location = results.item2;
-                        _isGettingLocation = false;
-                        setState(() {});
-                      }),
+                  suffixIcon: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      PopupMenuButton<String>(
+                        // color: Colors.orange,
+                        onSelected: (value) {
+                          setState(() {
+                            _selectedAddress = value;
+                          });
+                        },
+                        itemBuilder: (BuildContext context) {
+                          // ignore: unnecessary_null_comparison
+                          if (addresses.isEmpty) {
+                            // No addresses are available. Return a list with a single item.
+                            return [
+                              const PopupMenuItem<String>(
+                                value: 'No addresses available',
+                                child: Text('No addresses available'),
+                              ),
+                            ];
+                          } else {
+                            // Generate the menu entries dynamically based on the addresses.
+                            return addresses.map((String address) {
+                              return PopupMenuItem<String>(
+                                value: address,
+                                child: Text(address),
+                              );
+                            }).toList();
+                          }
+                        },
+                      ),
+                      IconButton(
+                          icon: const Icon(
+                            Icons.my_location,
+                          ),
+                          onPressed: () async {
+                            _isGettingLocation = true;
+                            setState(() {});
+                            var results = await Helper.getCurrentLocation(
+                                operator: false);
+                            addresses = results.item1;
+                            location = results.item2;
+                            _isGettingLocation = false;
+                            setState(() {});
+                          }),
+                    ],
+                  ),
                 ),
                 readOnly: true,
               ),
@@ -158,8 +212,11 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
               TextFormField(
                 keyboardType: TextInputType.number,
                 controller: _sizeController,
-                decoration:
-                    const InputDecoration(labelText: 'Size of Machinery'),
+                decoration: const InputDecoration(
+                  labelText: 'Size of Machinery',
+                  hintText: "140, 170, 225",
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter size of machinery';
@@ -171,8 +228,10 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
               TextFormField(
                 keyboardType: TextInputType.number,
                 controller: _hourlyChargeController,
-                decoration:
-                    const InputDecoration(labelText: 'Per Hour Charges'),
+                decoration: const InputDecoration(
+                    labelText: 'Per Hour Charges',
+                    border: OutlineInputBorder(),
+                    hintText: "4000, 6000, any"),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter hourly charges';
@@ -185,7 +244,11 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                 maxLines: 5,
                 textAlign: TextAlign.justify,
                 controller: _descriptionCOntroller,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(
+                    labelStyle: TextStyle(),
+                    labelText: 'Description',
+                    border: OutlineInputBorder(),
+                    floatingLabelBehavior: FloatingLabelBehavior.always),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'write something about machinery';
@@ -197,8 +260,10 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
               TextFormField(
                 controller: _emergencyNumberController,
                 keyboardType: TextInputType.phone,
-                decoration:
-                    const InputDecoration(labelText: 'Emergency Number'),
+                decoration: const InputDecoration(
+                    labelText: 'Emergency Number',
+                    border: OutlineInputBorder(),
+                    hintText: "03XX-XXXXXXX"),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter emergency number';
@@ -221,13 +286,46 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: (!TargetPlatform.kIsWeb)
-                            ? Image.file(
-                                File(_images[index].path),
-                                width: 70.0,
-                                height: 70.0,
-                                fit: BoxFit.cover,
+                            ? Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Image.file(
+                                    File(_images[index].path),
+                                    width: 70.0,
+                                    height: 70.0,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Positioned(
+                                    right:  -20,
+                                    top:  -15,
+                            
+                                    child: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _images.removeAt(index);
+                                          });
+                                        },
+                                        icon: Icon(Icons.cancel_outlined,color: Colors.red,)),
+                                  )
+                                ],
                               )
-                            : Image.memory(_webImages[index]),
+                            : Stack(
+                              clipBehavior: Clip.none,
+                                children: [
+                                  Image.memory(_webImages[index]),
+                                  Positioned(
+                                     right:  -20,
+                                    top:  -15,
+                                    child: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _webImages.removeAt(index);
+                                          });
+                                        },
+                                        icon: Icon(Icons.cancel_outlined,color: Colors.red,)),
+                                  )
+                                ],
+                              ),
                       );
                     },
                   ),
@@ -290,8 +388,6 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                   var machine = MachineryModel(
                                     machineryId: const Uuid().v1(),
                                     uid: curruntUser.uid,
-                                    name: curruntUser.name,
-                                    profilePicture: curruntUser.profileUrl,
                                     title: _titleController.text,
                                     model: _modelController.text,
                                     address: _selectedAddress.toString(),

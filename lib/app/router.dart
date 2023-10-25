@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vehicle_management_and_booking_system/app/splash.dart';
-import 'package:vehicle_management_and_booking_system/screens/bottom_navigation.dart';
-import 'package:vehicle_management_and_booking_system/screens/change_password.dart';
-import 'package:vehicle_management_and_booking_system/screens/machinery/machinery_dashBoard_screen.dart';
+import 'package:vehicle_management_and_booking_system/screens/common/bottom_navigation.dart';
+import 'package:vehicle_management_and_booking_system/screens/common/change_password.dart';
+import 'package:vehicle_management_and_booking_system/screens/machinery/home_screen.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/login.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/sign_up.dart';
-import 'package:vehicle_management_and_booking_system/screens/machinery/Single_machinery_details.dart';
-import 'package:vehicle_management_and_booking_system/screens/operators_screen.dart';
+import 'package:vehicle_management_and_booking_system/screens/operator/operators_screen.dart';
 import 'package:vehicle_management_and_booking_system/screens/registration_operator_machinery/add_operator.dart';
 import 'package:vehicle_management_and_booking_system/screens/registration_operator_machinery/machinery_form_screen.dart';
 
@@ -67,14 +66,14 @@ class AppRouter {
           builder: ((context) => const MachineryFormScreen()),
           settings: settings,
         );
-      case machineryDetails:
-        final args = settings.arguments as IndivisualPageArgs;
-        return MaterialPageRoute(
-          builder: ((context) => MachineryDetail(
-                machineryDetails: args.machineryDetails,
-              )),
-          settings: settings,
-        );
+      // case machineryDetails:
+      //   final args = settings.arguments as IndivisualPageArgs;
+      //   return MaterialPageRoute(
+      //     builder: ((context) => MachineryDetail(
+      //           machineryDetails: args.machineryDetails, 
+      //         )),
+      //     settings: settings,
+      //   );
       case changePasswordScreen:
         return MaterialPageRoute(
           builder: ((context) => const ChangePasswordScreen()),

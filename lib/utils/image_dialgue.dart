@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
@@ -11,7 +12,7 @@ Widget imageDialogue(BuildContext context,
     {required Function(Tuple2<XFile?, Uint8List?> file) onSelect}) {
   return SizedBox(
     width: screenWidth(context),
-    height: screenHeight(context) * 0.2,
+    height: screenHeight(context) * 0.3,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -30,7 +31,8 @@ Widget imageDialogue(BuildContext context,
                     onPressed: () async {
                       //final img = await pickImage(imageSource: ImageSource.camera);
                       // if (img != null) {
-                      Tuple2<XFile?, Uint8List?> img = await Imagee.pickImage(cmra: "1");
+                      Tuple2<XFile?, Uint8List?> img =
+                          await Imagee.pickImage(cmra: "1");
                       onSelect.call(img);
                       //}
                     },
@@ -49,7 +51,8 @@ Widget imageDialogue(BuildContext context,
                 onPressed: () async {
                   // final img = await pickImage(imageSource: ImageSource.gallery);
                   // if (img != null) {
-                  Tuple2<XFile?, Uint8List?> img = await Imagee.pickImage(cmra: "0");
+                  Tuple2<XFile?, Uint8List?> img =
+                      await Imagee.pickImage(cmra: "0");
 
                   onSelect.call(img);
                   // }
@@ -70,9 +73,14 @@ Widget imageDialogue(BuildContext context,
 }
 
 Future<XFile?> pickImageCamera({required ImageSource imageSource}) async {
-  final ImagePicker _picker = ImagePicker();
-  final img = await _picker.pickImage(source: imageSource);
-  return img;
+  try {
+    final ImagePicker _picker = ImagePicker();
+    final img = await _picker.pickImage(source: imageSource);
+    return img;
+  } catch (e) {
+    log("pickimageCarmerFunction error");
+    return null;
+  }
 }
 
 // Future<Tuple2<XFile?,Uint8List>> pickImage({required ImageSource imageSource}) async {
@@ -87,30 +95,38 @@ Future<XFile?> pickImageCamera({required ImageSource imageSource}) async {
 // }
 
 class Imagee {
-  static Future<Tuple2<XFile?, Uint8List?>> pickImage({required String cmra}) async {
+  static Future<Tuple2<XFile?, Uint8List?>> pickImage(
+      {required String cmra}) async {
     //final ImagePicker _picker = ImagePicker();
+
     XFile? selectFile;
     Uint8List? selectedImageInBytes;
-    if(cmra != "1"){
-    var fileResult = await FilePicker.platform.pickFiles(type: FileType.image);
-    // log(fileResult!.files.first.name);
-    if (fileResult != null && fileResult.files.isNotEmpty) {
-      if (!kIsWeb) {
-        selectFile = XFile(fileResult.files.single.path!);
+    try {
+      if (cmra != "1") {
+        var fileResult = await FilePicker.platform.pickFiles( type: FileType.custom,
+             allowedExtensions: ['jpg', 'jpeg','JPG','JPEG']);
+        // log(fileResult!.files.first.name);
+        if (fileResult != null && fileResult.files.isNotEmpty) {
+          if (!kIsWeb) {
+            selectFile = XFile(fileResult.files.single.path!);
+            selectedImageInBytes = null;
+            //log(selectFile.name);
+          } else if (fileResult.files.first.bytes != null && kIsWeb) {
+            //selectedImageInBytes = fileResult.
+            //log("sana");
+            selectFile = null;
+            selectedImageInBytes = fileResult.files.first.bytes;
+          }
+          //selectedImageInBytes = fileResult.files.first.bytes;
+        }
+      } else {
+        selectFile = await pickImageCamera(imageSource: ImageSource.camera);
         selectedImageInBytes = null;
-        //log(selectFile.name);
-      } else if (fileResult.files.first.bytes != null && kIsWeb) {
-        //selectedImageInBytes = fileResult.
-        //log("sana");
-        selectFile = null;
-        selectedImageInBytes = fileResult.files.first.bytes;
       }
-      //selectedImageInBytes = fileResult.files.first.bytes;
+    } catch (e) {
+      log("error in PickImage $e");
     }
-    }else{
-     selectFile = await pickImageCamera(imageSource: ImageSource.camera);
-     selectedImageInBytes = null;
-    }
+
     // var file = fileResult!.files.single;
     // if (file.path != null) {
     //   selectFile = XFile(file.path!);

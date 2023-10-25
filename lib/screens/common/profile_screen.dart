@@ -1,10 +1,7 @@
 import 'dart:developer';
-import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_arc_speed_dial/flutter_speed_dial_menu_button.dart';
@@ -13,7 +10,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
-import 'package:vehicle_management_and_booking_system/screens/user_total_machineris.dart';
+import 'package:vehicle_management_and_booking_system/screens/admin/admin_main_screen.dart';
+import 'package:vehicle_management_and_booking_system/screens/admin/admin_show_users.dart';
+import 'package:vehicle_management_and_booking_system/screens/admin/admin_toto_operator.dart';
+import 'package:vehicle_management_and_booking_system/screens/admin/notification.dart';
+import 'package:vehicle_management_and_booking_system/screens/common/user_total_machineris.dart';
+import 'package:vehicle_management_and_booking_system/screens/operator/my_register_operator.dart';
 import 'package:vehicle_management_and_booking_system/utils/image_dialgue.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 // ignore: library_prefixes
@@ -33,6 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Uint8List? selectedImageInBytes;
   bool _isShowDial = false;
   dynamic snapshot;
+  String? dropdownValue;
 
   @override
   void initState() {
@@ -53,7 +56,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         centerTitle: false,
         automaticallyImplyLeading: false,
-        title: const Text("My Profile"),
+        title: currentUser!.email == "sana.dev11211@gmail.com"
+            ? const Text("ADMIN")
+            : const Text("My Profile"),
+        actions: currentUser!.email == "sana.dev11211@gmail.com"
+            ? <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 12.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Admin Activities",
+                        style: TextStyle(color: Colors.orange),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: ((context) => AdminMainScreen())));
+                          },
+                          icon: Icon(
+                            Icons.admin_panel_settings_outlined,
+                            size: 40,
+                            color: Colors.orange,
+                          )),
+                    ],
+                  ),
+                )
+              ]
+            : null,
       ),
       body: Consumer<AuthController>(
         builder: (context, value, child) {
@@ -78,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         clipBehavior: Clip.none,
                         children: [
                           CircleAvatar(
-                            radius: 60,
+                            radius: 50,
                             backgroundImage: value.appUser!.profileUrl != null
                                 ? CachedNetworkImageProvider(
                                     // imageUrl:
@@ -100,8 +130,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           //     ? SizedBox()
                           //     :
                           Positioned(
-                            right: -5,
-                            bottom: 0,
+                            right: -10,
+                            bottom: -5,
                             child: IconButton(
                               icon: Icon(
                                 Icons.camera,
@@ -146,7 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Text(
                         context.read<AuthController>().appUser!.name,
                         style: const TextStyle(
@@ -154,11 +184,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                       Text(
                         context.read<AuthController>().appUser!.email,
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           color: Colors.grey[600],
                         ),
                       ),
@@ -170,17 +200,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.construction_outlined,color: Colors.orange),
+                  leading: const Icon(Icons.construction_outlined,
+                      color: Colors.orange),
                   title: const Text('Registered Machineries'),
                   onTap: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (ctx) {
-                      return MachineryListScreen();
+                      return MachineryListScreen(
+                        isthisAdmin: false,
+                      );
                     }));
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.lock,color: Colors.orange),
+                  leading: const Icon(Icons.person, color: Colors.orange),
+                  title: const Text('Registered Operators'),
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (ctx) {
+                      return MyRegisteredOperators();
+                    }));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.lock, color: Colors.orange),
                   title: Text('Change Password'),
                   onTap: () {
                     Navigator.of(context)
@@ -188,18 +231,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.language,color: Colors.orange),
+                  leading: Icon(Icons.language, color: Colors.orange),
                   title: Text('Language'),
                   subtitle:
                       Text(context.read<AuthController>().appUser!.languages),
                 ),
+                // context.read<AuthController>().appUser!.email ==
+                //         "sana.dev11211@gmail.com"
+                //     ? ListTile(
+                //        onTap: () {
+                //     Navigator.of(context)
+                //         .push(MaterialPageRoute(builder: (ctx) {
+
+                //       return UserListPage();
+                //     }));
+                //   },
+                //         leading: Icon(Icons.person, color: Colors.orange),
+                //         title: Text('Remove Users'),
+
+                //       )
+                //     : SizedBox(),
+                // context.read<AuthController>().appUser!.email ==
+                //         "sana.dev11211@gmail.com"
+                //     ? ListTile(
+                //        onTap: () {
+                //     Navigator.of(context)
+                //         .push(MaterialPageRoute(builder: (ctx) {
+                //       return MachineryListScreen(isthisAdmin: true,);
+                //     }));
+                //   },
+                //         leading: Image.asset("assets/images/pngegg.png",
+                //             color: Colors.orange, height: 30, width: 30),
+                //         title: Text('Remove Machinery'),
+                //         // subtitle: Text(
+                //         //     context.read<AuthController>().appUser!.languages),
+                //       )
+                //     : SizedBox(),
                 ListTile(
-                  leading: Icon(Icons.logout,color: Colors.orange),
+                  leading: Icon(Icons.logout, color: Colors.orange),
                   title: Text('Log Out'),
                   onTap: () {
                     context.read<AuthController>().signOut(context);
                   },
-                )
+                ),
               ],
             ),
           );
@@ -221,8 +295,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       //general init
       isMainFABMini: false,
       mainMenuFloatingActionButton: MainMenuFloatingActionButton(
+        backgroundColor: Colors.orange,
           mini: false,
-          child: const Icon(Icons.menu),
+          child: const Icon(Icons.add),
           onPressed: () {},
           closeMenuChild: const Icon(Icons.close),
           closeMenuForegroundColor: Colors.white,
@@ -238,9 +313,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             Navigator.of(context).pushNamed(AppRouter.machineryFormScreen);
           },
-          backgroundColor: Colors.pink,
+          backgroundColor: Colors.orange,
           child: Image.asset(
             "assets/images/pngegg.png",
+            color: Colors.white,
             height: 30,
             width: 30,
           ),
