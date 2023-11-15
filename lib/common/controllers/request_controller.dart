@@ -811,34 +811,37 @@ class RequestController with ChangeNotifier {
 
   Future<void> getPolyPoint() async {
     try {
-      if (TargetPlatform.kIsWeb) {
-        List<LatLng>? poly = await GoogleMapsGeocodingApi.getRouteCoordinates(
-          // "AIzaSyCLbJLS9F81c-2Qu1WcztJ2LdO10MgVCvk", // Use a config or environment variable for the key
-          // "AIzaSyDyCtN4KYInCI8NXHKvYNVq4YPNk7e8o70",
-          "AIzaSyAXGWwbvlDHQzc13kITch4lvsL7TnWEm3c",
-          // "AIzaSyCLbJLS9F81c-2Qu1WcztJ2LdO10MgVCvk",
-          // "AIzaSyC1LSG-RbtWDwajBhTiuF_-n8MwLLwDqfk",
-          LatLng(
-            request!.senderUid == _appUser!.uid
-                ? source!.latitude
-                : destination!.latitude,
-            request!.senderUid == _appUser!.uid
-                ? source!.longitude
-                : destination!.longitude,
-          ),
-          LatLng(
-            request!.senderUid == _appUser!.uid
-                ? destination!.latitude
-                : source!.latitude,
-            request!.senderUid == _appUser!.uid
-                ? destination!.longitude
-                : source!.longitude,
-          ),
-            //travelMode: google_maps_flutter.TravelMode.driving
-        );
-        log(poly.toString());
-        notifyListeners();
-      } else {
+      // if (TargetPlatform.kIsWeb) {
+      //     await Geolocator.requestPermission();
+
+      //   List<LatLng>? poly = await GoogleMapsGeocodingApi.getRouteCoordinates(
+      //     // "AIzaSyCLbJLS9F81c-2Qu1WcztJ2LdO10MgVCvk", // Use a config or environment variable for the key
+      //     // "AIzaSyDyCtN4KYInCI8NXHKvYNVq4YPNk7e8o70",
+      //     "AIzaSyDyCtN4KYInCI8NXHKvYNVq4YPNk7e8o70",
+      //     // "AIzaSyCLbJLS9F81c-2Qu1WcztJ2LdO10MgVCvk",
+      //     // "AIzaSyC1LSG-RbtWDwajBhTiuF_-n8MwLLwDqfk",
+      //     LatLng(
+      //       request!.senderUid == _appUser!.uid
+      //           ? source!.latitude
+      //           : destination!.latitude,
+      //       request!.senderUid == _appUser!.uid
+      //           ? source!.longitude
+      //           : destination!.longitude,
+      //     ),
+      //     LatLng(
+      //       request!.senderUid == _appUser!.uid
+      //           ? destination!.latitude
+      //           : source!.latitude,
+      //       request!.senderUid == _appUser!.uid
+      //           ? destination!.longitude
+      //           : source!.longitude,
+      //     ),
+            
+      //   );
+      //   plylineCoordinates = poly!;
+      //   print(poly.toString());
+      //   notifyListeners();
+      // } else {
         PolylinePoints polylinePoints = PolylinePoints();
         PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
           // "AIzaSyCLbJLS9F81c-2Qu1WcztJ2LdO10MgVCvk", // Use a config or environment variable for the key
@@ -872,7 +875,7 @@ class RequestController with ChangeNotifier {
           }
           notifyListeners();
         }
-      }
+      //}
       isLoadingForTracking = false;
       notifyListeners();
     } catch (e) {

@@ -15,6 +15,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
+
+//    ProxyServer(proxyTo: 'https://maps.googleapis.com')
+//     ..start(port: 8080)
+//     ..serverHeader = 'Proxy'
+//     ..autoStart = true;
+// }
   WidgetsFlutterBinding.ensureInitialized();
    tz.initializeTimeZones();
 

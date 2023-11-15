@@ -415,7 +415,7 @@ class _TrackOrderState extends State<TrackOrder> {
     super.dispose();
   }
 
-  double currentZoom = 16.5;
+  double currentZoom = 15.5;
 
   void zoomIn() {
     if (currentZoom < 19) {
@@ -671,12 +671,12 @@ class _TrackOrderState extends State<TrackOrder> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text('Send Message'),
-                                        content: Text(
+                                        title: const Text('Send Message'),
+                                        content: const Text(
                                             'Choose an option to send a message:'),
                                         actions: <Widget>[
                                           TextButton(
-                                            child: Text('In-App Message'),
+                                            child: const Text('In-App Message'),
                                             onPressed: () {
                                               context
                                                   .read<
@@ -691,7 +691,7 @@ class _TrackOrderState extends State<TrackOrder> {
                                             },
                                           ),
                                           TextButton(
-                                            child: Text('SMS Message'),
+                                            child: const Text('SMS Message'),
                                             onPressed: () async {
                                               final phoneNumber = widget.request
                                                           .machineryOwnerUid ==

@@ -87,7 +87,7 @@ class _ReportScreenState extends State<ReportScreen> {
     bool isDark = ConstantHelper.darkOrBright(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: Text( widget.machine != null?"Machine Complaint":
           "Complaint",
           style: TextStyle(color: isDark ? null : Colors.black),
         ),

@@ -99,7 +99,7 @@ import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 class SkeletonMachineryWidget extends StatelessWidget {
   //final int timer;
 
-  SkeletonMachineryWidget();
+  const SkeletonMachineryWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +121,7 @@ class SkeletonMachineryWidget extends StatelessWidget {
               baseColor: baseColor,
               highlightColor: highlightColor,
               child: Container(
-                margin: EdgeInsets.all(7.5),
+                margin: const EdgeInsets.all(7.5),
                 child: Column(
                   children: <Widget>[
                     // Mimic the machinery image
