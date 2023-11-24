@@ -307,7 +307,7 @@ void _getAllMachineries() async {
                           ),
                         ),
                       ),
-                    )
+                    ),
 
                   ],
                 ),
