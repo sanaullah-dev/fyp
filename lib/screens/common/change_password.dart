@@ -177,7 +177,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   obscureText: !_isOldPasswordVisible,
                   decoration: InputDecoration(
                     labelText: 'Old Password',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     hintText: "xxxxxxxx",
                     suffixIcon: IconButton(
                         icon: Icon(
@@ -261,7 +261,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   controller: _confirmPasswordController,
                   obscureText: !_isConfirmNewPasswordVisible,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     hintText: "xxxxxxxx",
                     labelText: 'Confirm New Password',
                     suffixIcon: IconButton(
@@ -292,18 +292,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       //elevation: 20,
-                      backgroundColor: isDark
-                          ? AppColors.primaryColor
-                          : AppColors.accentColor,
+                      backgroundColor:  AppColors.accentColor,
                       side: BorderSide(
                           width: 0.5,
                           color: isDark ? Colors.white : Colors.orange)),
                   onPressed: _isLoading ? null : _changePassword,
                   child: _isLoading
                       ? const CircularProgressIndicator()
-                      : Text(
+                      : const Text(
                           'Change Password',
-                          style: TextStyle(color: isDark ? null : Colors.black),
+                          style: TextStyle(color:  Colors.black),
                         ),
                 ),
               ],

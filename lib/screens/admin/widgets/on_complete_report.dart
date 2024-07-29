@@ -10,15 +10,15 @@ void showUpdateDialog(BuildContext context, ReportModel report,bool isThisMachin
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Update Report"),
+        title: const Text("Update Report"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Provide a comment for the report owner."),
-            SizedBox(height: 10),
+            const Text("Provide a comment for the report owner."),
+            const SizedBox(height: 10),
             TextField(
               controller: commentController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Your comment...",
                 border: OutlineInputBorder(),
               ),
@@ -31,7 +31,7 @@ void showUpdateDialog(BuildContext context, ReportModel report,bool isThisMachin
             onPressed: () {
               Navigator.of(context).pop(); // Close the dialog
             },
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
           ),
           TextButton(
             onPressed: () async {
@@ -51,7 +51,7 @@ void showUpdateDialog(BuildContext context, ReportModel report,bool isThisMachin
                 Navigator.of(context).pop();
               }
             },
-            child: Text("Update"),
+            child: const Text("Update"),
           ),
         ],
       );

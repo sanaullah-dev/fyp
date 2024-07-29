@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -67,7 +65,7 @@ void showAlert(BuildContext context,
                                     ? '${sender.email.substring(0, 24)}...'
                                     : sender.email,
                                 style:
-                                    TextStyle(fontSize: 12, color: Colors.grey),
+                                    const TextStyle(fontSize: 12, color: Colors.grey),
                               )
                             ],
                           ),
@@ -87,7 +85,7 @@ void showAlert(BuildContext context,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Offer"),
+                                const Text("Offer"),
                                 Text("Rs.${request.price}/h"),
                               ],
                             ),
@@ -95,13 +93,13 @@ void showAlert(BuildContext context,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Total Work Hours"),
+                                const Text("Total Work Hours"),
                                 Text("${request.workOfHours}/hrs."),
                               ],
                             )
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         // request.senderUid ==
@@ -129,22 +127,22 @@ void showAlert(BuildContext context,
                                 context.read<AuthController>().appUser!.uid
                             ? Padding(
                                 padding:
-                                    EdgeInsetsDirectional.fromSTEB(0, 0, 5, 0),
+                                    const EdgeInsetsDirectional.fromSTEB(0, 0, 5, 0),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
                                           0, 0, 5, 0),
                                       child: Container(
                                         //width: screenWidth(context) * 0.28,
                                         height: 30,
                                         decoration: BoxDecoration(
-                                          color: Color(0x00FFFFFF),
+                                          color: const Color(0x00FFFFFF),
                                           borderRadius:
                                               BorderRadius.circular(6),
                                           border: Border.all(
-                                            color: Color(0xFF7F8788),
+                                            color: const Color(0xFF7F8788),
                                             width: 2,
                                           ),
                                         ),
@@ -196,10 +194,11 @@ void showAlert(BuildContext context,
                                   ],
                                 ),
                               )
-                            : SizedBox(),
+                            : const SizedBox(),
                       ],
                     ),
                   ),
+                  const Divider(),
                   LayoutBuilder(builder: (context, BoxConstraints constraints) {
                     // Suppose this is your description string fetched from Firebase
                     String description = request.description.toString();
@@ -220,41 +219,38 @@ void showAlert(BuildContext context,
                       ),
                       decoration: BoxDecoration(
                           color: isDark
-                              ? const Color.fromARGB(255, 111, 108, 108)
-                              : Colors.white60,
+                              ?  Colors.transparent
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(5)),
-                      child: Material(
-                        elevation: 5.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(13.0),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Description",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      color: isDark
-                                          ? Colors.white
-                                          : Color.fromARGB(255, 103, 103, 103)),
-                                ),
-                                SizedBox(
-                                  height: 3,
-                                ),
-                                Text(
-                                  request.description.toString(),
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: isDark
-                                          ? Colors.white60
-                                          : const Color.fromARGB(
-                                              255, 117, 116, 116)),
-                                  textAlign: TextAlign.justify,
-                                )
-                              ],
-                            ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(13.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Description",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: isDark
+                                        ? Colors.white
+                                        : const Color.fromARGB(255, 103, 103, 103)),
+                              ),
+                              const SizedBox(
+                                height: 3,
+                              ),
+                              Text(
+                                request.description.toString(),
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: isDark
+                                        ? Colors.white60
+                                        : const Color.fromARGB(
+                                            255, 117, 116, 116)),
+                                textAlign: TextAlign.justify,
+                              )
+                            ],
                           ),
                         ),
                       ),

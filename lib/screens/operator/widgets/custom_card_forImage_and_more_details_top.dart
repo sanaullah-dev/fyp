@@ -11,7 +11,7 @@ Widget infoText(String title, String content, bool isDark) {
     //mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-        title == "Rating"?SizedBox():
+        title == "Rating"?const SizedBox():
       Builder(builder: (context) {
         String temp = title;
         String text = temp.length > 10
@@ -46,15 +46,15 @@ Widget infoText(String title, String content, bool isDark) {
                   children: [
                     Text(
                       content,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.orange,
                         fontWeight: FontWeight.w600,
                         fontSize: 18,
                       ),
                     ),
-                    SizedBox(width: 5,),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
+                    const SizedBox(width: 5,),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 2.0),
                       child: Icon(
                         Icons.star,
                         color:Colors.orange,

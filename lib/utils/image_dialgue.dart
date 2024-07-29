@@ -20,7 +20,7 @@ Widget imageDialogue(BuildContext context,
           "Select Picker",
           style: TextStyle(fontSize: 24),
         ),
-        SizedBox(
+        const SizedBox(
           height: 40,
         ),
         Row(
@@ -41,12 +41,12 @@ Widget imageDialogue(BuildContext context,
                       color: Colors.blue,
                       size: 50,
                     ))
-                : SizedBox(),
+                : const SizedBox(),
             !kIsWeb
                 ? SizedBox(
                     width: screenWidth(context) * 0.3,
                   )
-                : SizedBox(),
+                : const SizedBox(),
             IconButton(
                 onPressed: () async {
                   // final img = await pickImage(imageSource: ImageSource.gallery);
@@ -64,7 +64,7 @@ Widget imageDialogue(BuildContext context,
                 )),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 30,
         ),
       ],

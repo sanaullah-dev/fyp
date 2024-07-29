@@ -13,7 +13,6 @@ import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/request_controller.dart';
-import 'package:vehicle_management_and_booking_system/common/helper.dart';
 import 'package:vehicle_management_and_booking_system/models/request_machiery_model.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/drawer_items/operator_requests.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/drawer_items/drawer_screens/report_screen.dart';
@@ -21,7 +20,6 @@ import 'package:vehicle_management_and_booking_system/screens/common/messages_sc
 import 'package:vehicle_management_and_booking_system/screens/common/profile_screen.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/widgets/show_alert.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
-import 'package:vehicle_management_and_booking_system/screens/machinery/track_order.dart';
 import 'package:vehicle_management_and_booking_system/screens/machinery/widgets/show_custom_rating_dialog.dart';
 import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
@@ -29,7 +27,7 @@ import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 import 'package:vehicle_management_and_booking_system/utils/notification_method.dart';
 
 class ReceivedRequestsScreen extends StatefulWidget {
-  ReceivedRequestsScreen({this.isHiring, this.isNotifications});
+  ReceivedRequestsScreen({super.key, this.isHiring, this.isNotifications});
   bool? isHiring;
   bool? isNotifications;
   @override
@@ -383,302 +381,306 @@ class _ReceivedRequestsScreenState extends State<ReceivedRequestsScreen> {
                                               //   return DetalleWidget(model: machines);
                                               // })));
                                             },
-                                            child: Container(
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    height:
-                                                        screenHeight(context) *
-                                                            0.2,
-                                                    width:
-                                                        screenWidth(context) *
-                                                            0.4,
-                                                    child: Card(
-                                                        child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      child: Image.network(
-                                                        machines.images.last
-                                                            .toString(),
-                                                        fit: BoxFit.cover,
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                SizedBox(
+                                                  height:
+                                                      screenHeight(context) *
+                                                          0.2,
+                                                  width:
+                                                      screenWidth(context) *
+                                                          0.39,
+                                                  child: Card(
+                                                      child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    child: Image.network(
+                                                      machines.images.last
+                                                          .toString(),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 20.0,
+                                                          top: 0,
+                                                          bottom: 10),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Builder(
+                                                          builder: (context) {
+                                                        String temp =
+                                                            machines.title;
+                                                        String _title = temp
+                                                                    .length >
+                                                                11
+                                                            ? "${temp.substring(0, min(11, temp.length))}..."
+                                                            : temp;
+                                                        return Text(
+                                                          //"Islamabad",
+                                                          _title
+                                                              .toUpperCase(),
+                                            
+                                                          // widget.machineryDetails.address, overflow: TextOverflow.ellipsis,maxLines: 1,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 18,
+                                                            fontFamily:
+                                                                "Quantico",
+                                                            // color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w800,
+                                                          ),
+                                                        );
+                                                      }),
+                                                      // Text(
+                                                      //   machines.title
+                                                      //       .toUpperCase()
+                                                      //       .toString(),
+                                                      //   overflow: TextOverflow.ellipsis,
+                                                      //   maxLines: 1,
+                                                      //   style: const TextStyle(
+                                                      //     fontSize: 18,
+                                                      //     fontFamily: "Quantico",
+                                                      //     // color: Colors.black,
+                                                      //     fontWeight: FontWeight.w800,
+                                                      //   ),
+                                                      // ),
+                                                      const SizedBox(
+                                                        height: 15,
                                                       ),
-                                                    )),
+                                                      Text(
+                                                        "Charges",
+                                                        style: TextStyle(
+                                                            color: isDark
+                                                                ? Colors
+                                                                    .white70
+                                                                : Colors.grey,
+                                                            fontSize: 12),
+                                                      ),
+                                                      Text(
+                                                        machines.charges
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          color: isDark
+                                                              ? Colors.white
+                                                              : const Color
+                                                                  .fromARGB(
+                                                                  255,
+                                                                  84,
+                                                                  84,
+                                                                  84),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 15,
+                                                      ),
+                                                      Text(
+                                                        "Rating",
+                                                        style: TextStyle(
+                                                            color: isDark
+                                                                ? Colors
+                                                                    .white70
+                                                                : Colors.grey,
+                                                            fontSize: 12),
+                                                      ),
+                                                      Text(
+                                                        "${machines.rating.toStringAsFixed(1)}/5",
+                                                        style: TextStyle(
+                                                          color: isDark
+                                                              ? Colors.white
+                                                              : const Color
+                                                                  .fromARGB(
+                                                                  255,
+                                                                  84,
+                                                                  84,
+                                                                  84),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                            
+                                                    ],
                                                   ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 20.0,
-                                                            top: 0,
-                                                            bottom: 10),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Builder(
-                                                            builder: (context) {
-                                                          String temp =
-                                                              machines.title;
-                                                          String _title = temp
-                                                                      .length >
-                                                                  11
-                                                              ? "${temp.substring(0, min(11, temp.length))}..."
-                                                              : temp;
-                                                          return Text(
-                                                            //"Islamabad",
-                                                            _title
-                                                                .toUpperCase(),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
 
-                                                            // widget.machineryDetails.address, overflow: TextOverflow.ellipsis,maxLines: 1,
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 18,
-                                                              fontFamily:
-                                                                  "Quantico",
-                                                              // color: Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w800,
-                                                            ),
-                                                          );
-                                                        }),
-                                                        // Text(
-                                                        //   machines.title
-                                                        //       .toUpperCase()
-                                                        //       .toString(),
-                                                        //   overflow: TextOverflow.ellipsis,
-                                                        //   maxLines: 1,
-                                                        //   style: const TextStyle(
-                                                        //     fontSize: 18,
-                                                        //     fontFamily: "Quantico",
-                                                        //     // color: Colors.black,
-                                                        //     fontWeight: FontWeight.w800,
-                                                        //   ),
-                                                        // ),
-                                                        const SizedBox(
-                                                          height: 15,
-                                                        ),
-                                                        Text(
-                                                          "Charges",
-                                                          style: TextStyle(
-                                                              color: isDark
-                                                                  ? Colors
-                                                                      .white70
-                                                                  : Colors.grey,
-                                                              fontSize: 12),
-                                                        ),
-                                                        Text(
-                                                          machines.charges
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                            color: isDark
-                                                                ? Colors.white
-                                                                : const Color
-                                                                    .fromARGB(
-                                                                    255,
-                                                                    84,
-                                                                    84,
-                                                                    84),
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 15,
-                                                        ),
-                                                        Text(
-                                                          "Rating",
-                                                          style: TextStyle(
-                                                              color: isDark
-                                                                  ? Colors
-                                                                      .white70
-                                                                  : Colors.grey,
-                                                              fontSize: 12),
-                                                        ),
-                                                        Text(
-                                                          "${machines.rating.toStringAsFixed(1)}/5",
-                                                          style: TextStyle(
-                                                            color: isDark
-                                                                ? Colors.white
-                                                                : const Color
-                                                                    .fromARGB(
-                                                                    255,
-                                                                    84,
-                                                                    84,
-                                                                    84),
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-
-                                                        //requests[index].status ==null&& dateDifference.inHours >= 2? :
-
-                                                        requests[index]
-                                                                    .status ==
-                                                                null
-                                                            ? Visibility(
-                                                                visible:
-                                                                    isVissible,
-                                                                child: Row(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
-                                                                  children: [
-                                                                    OutlinedButton(
+                                                      //requests[index].status ==null&& dateDifference.inHours >= 2? :
+                                            
+                                                      requests[index]
+                                                                  .status ==
+                                                              null
+                                                          ? Visibility(
+                                                              visible:
+                                                                  isVissible,
+                                                              child: Wrap(
+                                                                // mainAxisSize:
+                                                                //     MainAxisSize
+                                                                //         .min,
+                                                                children: [
+                                                                  OutlinedButton(
+                                                                    child:
+                                                                        const Text(
+                                                                      'Cancel',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.red),
+                                                                    ),
+                                                                    onPressed:
+                                                                        () async {
+                                                                      // Handle cancellation here
+                                                                      try {
+                                                                        // Get the id of the request
+                                                                        var requestId =
+                                                                            requests[index].requestId;
+                                            
+                                                                        // Update status in sender's sub-collection
+                                                                        await FirebaseFirestore
+                                                                            .instance
+                                                                            .collection(
+                                                                                'users')
+                                                                            .doc(requests[index]
+                                                                                .senderUid) // Replace with the sender's uid
+                                                                            .collection(
+                                                                                'sent_requests')
+                                                                            .doc(
+                                                                                requestId)
+                                                                            .update({
+                                                                          'status':
+                                                                              'Canceled'
+                                                                        });
+                                            
+                                                                        // Update status in receiver's sub-collection
+                                                                        await FirebaseFirestore
+                                                                            .instance
+                                                                            .collection(
+                                                                                'users')
+                                                                            .doc(requests[index]
+                                                                                .machineryOwnerUid) // Replace with the receiver's uid
+                                                                            .collection(
+                                                                                'received_requests')
+                                                                            .doc(
+                                                                                requestId)
+                                                                            .update({
+                                                                          'status':
+                                                                              'Canceled'
+                                                                        });
+                                            
+                                                                        await FirebaseFirestore
+                                                                            .instance
+                                                                            .collection(
+                                                                                'machinery_requests')
+                                                                            .doc(requests[index]
+                                                                                .requestId) // Replace with the request's uid
+                                                                            .update({
+                                                                          'status':
+                                                                              'Canceled'
+                                                                        });
+                                            
+                                                                        final UserModel
+                                                                            user =
+                                                                            context.read<MachineryRegistrationController>().getUser(requests[index].senderUid);
+                                            
+                                                                        final notificationMethod =
+                                                                            NotificationMethod();
+                                                                        await notificationMethod.sendNotification(
+                                                                            fcm: user.fcm.toString(),
+                                                                            title: 'Canceled',
+                                                                            body: 'Your request rejected',
+                                                                            type: "cancel");
+                                                                      } catch (e) {
+                                                                        // Handle any errors that might occur
+                                                                        print(
+                                                                            e);
+                                                                      }
+                                                                    },
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      width:
+                                                                          10), // Add some spacing between the buttons
+                                                                  OutlinedButton(
                                                                       child:
                                                                           const Text(
-                                                                        'Cancel',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.red),
+                                                                        'Activate',
+                                                                        style:
+                                                                            TextStyle(color: Colors.blue),
                                                                       ),
                                                                       onPressed:
                                                                           () async {
-                                                                        // Handle cancellation here
                                                                         try {
-                                                                          // Get the id of the request
-                                                                          var requestId =
-                                                                              requests[index].requestId;
-
-                                                                          // Update status in sender's sub-collection
-                                                                          await FirebaseFirestore
-                                                                              .instance
-                                                                              .collection(
-                                                                                  'users')
-                                                                              .doc(requests[index]
-                                                                                  .senderUid) // Replace with the sender's uid
-                                                                              .collection(
-                                                                                  'sent_requests')
-                                                                              .doc(
-                                                                                  requestId)
-                                                                              .update({
-                                                                            'status':
-                                                                                'Canceled'
-                                                                          });
-
-                                                                          // Update status in receiver's sub-collection
-                                                                          await FirebaseFirestore
-                                                                              .instance
-                                                                              .collection(
-                                                                                  'users')
-                                                                              .doc(requests[index]
-                                                                                  .machineryOwnerUid) // Replace with the receiver's uid
-                                                                              .collection(
-                                                                                  'received_requests')
-                                                                              .doc(
-                                                                                  requestId)
-                                                                              .update({
-                                                                            'status':
-                                                                                'Canceled'
-                                                                          });
-
-                                                                          await FirebaseFirestore
-                                                                              .instance
-                                                                              .collection(
-                                                                                  'machinery_requests')
-                                                                              .doc(requests[index]
-                                                                                  .requestId) // Replace with the request's uid
-                                                                              .update({
-                                                                            'status':
-                                                                                'Canceled'
-                                                                          });
-
+                                                                          final currentPosition =
+                                                                              await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+                                                                          await updateRequestStatus(
+                                                                              context,
+                                                                              requests[index],
+                                                                              currentPosition,
+                                                                              "Activated");
+                                            
                                                                           final UserModel
                                                                               user =
                                                                               context.read<MachineryRegistrationController>().getUser(requests[index].senderUid);
-
+                                            
                                                                           final notificationMethod =
                                                                               NotificationMethod();
                                                                           await notificationMethod.sendNotification(
                                                                               fcm: user.fcm.toString(),
-                                                                              title: 'Canceled',
-                                                                              body: 'Your request rejected',
-                                                                              type: "cancel");
+                                                                              title: 'Activated',
+                                                                              body: 'Open And Track!',
+                                                                              type: "activation");
+                                                                          await context.read<MachineryRegistrationController>().updateMachine(machines,
+                                                                              false);
+                                                                          Navigator.pushNamed(context,
+                                                                              AppRouter.trackOrder,
+                                                                              arguments: requests[index]);
                                                                         } catch (e) {
-                                                                          // Handle any errors that might occur
-                                                                          print(
-                                                                              e);
+                                                                          print(e);
                                                                         }
-                                                                      },
-                                                                    ),
-                                                                    const SizedBox(
-                                                                        width:
-                                                                            10), // Add some spacing between the buttons
-                                                                    OutlinedButton(
-                                                                        child:
-                                                                            const Text(
-                                                                          'Activate',
-                                                                          style:
-                                                                              TextStyle(color: Colors.blue),
-                                                                        ),
-                                                                        onPressed:
-                                                                            () async {
-                                                                          try {
-                                                                            final currentPosition =
-                                                                                await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-                                                                            await updateRequestStatus(
-                                                                                context,
-                                                                                requests[index],
-                                                                                currentPosition,
-                                                                                "Activated");
-
-                                                                            final UserModel
-                                                                                user =
-                                                                                context.read<MachineryRegistrationController>().getUser(requests[index].senderUid);
-
-                                                                            final notificationMethod =
-                                                                                NotificationMethod();
-                                                                            await notificationMethod.sendNotification(
-                                                                                fcm: user.fcm.toString(),
-                                                                                title: 'Activated',
-                                                                                body: 'Open And Track!',
-                                                                                type: "activation");
-                                                                            await context.read<MachineryRegistrationController>().updateMachine(machines,
-                                                                                false);
-                                                                            Navigator.pushNamed(context,
-                                                                                AppRouter.trackOrder,
-                                                                                arguments: requests[index]);
-                                                                          } catch (e) {
-                                                                            print(e);
-                                                                          }
-                                                                        }),
-                                                                  ],
-                                                                ),
-                                                              )
-                                                            : const SizedBox(),
-                                                        requests[index]
-                                                                    .status ==
-                                                                null
-                                                            ? OutlinedButton(
-                                                                onPressed: () {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .push(MaterialPageRoute(
-                                                                          builder:
-                                                                              (ctx) {
-                                                                    return MessagesScreen(
-                                                                        request:
-                                                                            requests[index]);
-                                                                  }));
-                                                                },
-                                                                child: const Text(
-                                                                    "Messages"))
-                                                            : Container(),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
+                                                                      }),
+                                                                        const SizedBox(
+                                                                      width:
+                                                                          10), // Add some spacing between the buttons
+                                                                       requests[index]
+                                                                  .status ==
+                                                              null
+                                                          ? OutlinedButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .push(MaterialPageRoute(
+                                                                        builder:
+                                                                            (ctx) {
+                                                                  return MessagesScreen(
+                                                                      request:
+                                                                          requests[index]);
+                                                                }));
+                                                              },
+                                                              child: const Text(
+                                                                  "Messages"))
+                                                          : Container(),
+                                                                ],
+                                                              ),
+                                                            )
+                                                          : const SizedBox(),
+                                                     
                                           Padding(
                                             padding: const EdgeInsets.only(
                                               left: 8.0,

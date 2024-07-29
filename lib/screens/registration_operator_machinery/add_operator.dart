@@ -1,6 +1,5 @@
 // ignore: file_names
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -163,7 +162,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             TextFormField(
@@ -216,7 +215,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
 
               controller: _locationController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 // prefixText: "Press my location",
                 helperText: _selectedAddress == null
                     ? "Press location and popupMenuButton to get accurate location"
@@ -321,9 +320,9 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
               validator: (value) {
                 Pattern pattern = r'^(03[0-9]{2})([0-9]{7})$';
                 RegExp regex = RegExp(pattern.toString());
-                if (!regex.hasMatch(value!) || value.isEmpty)
+                if (!regex.hasMatch(value!) || value.isEmpty) {
                   return 'Invalid mobile number';
-                else
+                } else
                   return null;
               },
             ),
@@ -359,7 +358,7 @@ class _OperatorFormScreenState extends State<OperatorFormScreen> {
               decoration: InputDecoration(
                 labelText: 'Gender',
                 hintText: "Male,Female,Other",
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 suffixIcon: PopupMenuButton<String>(
                   onSelected: (value) {
                     setState(() {

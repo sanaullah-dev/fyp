@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -112,10 +114,10 @@ class AllReviewsScreen extends StatelessWidget {
                     : fetchUserFromFirebase(uid!),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
-                return Center(child: Text("An error occurred"));
+                return const Center(child: Text("An error occurred"));
               }
 
               List? allRatings; // Declare it here, do not use "late"
@@ -134,7 +136,7 @@ class AllReviewsScreen extends StatelessWidget {
               }
 
               if (allRatings == null || allRatings.isEmpty) {
-                return Center(child: Text("No reviews available."));
+                return const Center(child: Text("No reviews available."));
               }
               // Sort allRatings by date
               allRatings.sort((a, b) => b.date
@@ -170,19 +172,19 @@ class AllReviewsScreen extends StatelessWidget {
                                           ))
                                         : CircleAvatar(
                                             child: Text(ratingUser.name[0])),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     Text(
                                       ratingUser.name,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20),
                                     ),
                                   ],
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               Row(
@@ -218,7 +220,7 @@ class AllReviewsScreen extends StatelessWidget {
                                       ),
                                     );
                                   }),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 20,
                                   ),
                                   Text(
@@ -231,7 +233,7 @@ class AllReviewsScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(15.0),
                                 child: Container(
-                                    margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
+                                    margin: const EdgeInsets.fromLTRB(7, 0, 0, 0),
                                     child: Text(
                                       review.comment,
                                       textAlign: TextAlign.justify,

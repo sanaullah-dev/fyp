@@ -21,7 +21,7 @@ import 'package:flutter/foundation.dart' as TargetPlatform;
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
 
 class ReportScreen extends StatefulWidget {
-  ReportScreen({this.request, this.machine});
+  ReportScreen({super.key, this.request, this.machine});
 
   RequestModelForMachieries? request;
   MachineryModel? machine;

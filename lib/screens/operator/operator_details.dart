@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer' as dev;
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,12 +11,10 @@ import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
-import 'package:vehicle_management_and_booking_system/common/controllers/request_controller.dart';
 import 'package:vehicle_management_and_booking_system/models/operator_model.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/image_viewer.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/profile_screen.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/reviews_screen.dart';
-import 'package:vehicle_management_and_booking_system/screens/common/widgets/rating_box.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
 import 'package:vehicle_management_and_booking_system/screens/operator/hiring_details.dart';
 import 'package:vehicle_management_and_booking_system/screens/operator/widgets/custom_card_forImage_and_more_details_top.dart';
@@ -354,8 +354,8 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                           return HiringDetailsScreen(operatorModel: widget.operator);
                         }));
                                       },
-                                      icon: Icon(Icons.info_outline))
-                                  : SizedBox()
+                                      icon: const Icon(Icons.info_outline))
+                                  : const SizedBox()
                             ],
                           ),
                         ],
@@ -465,8 +465,8 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text("What would you like to do?"),
-                                    content: Text(
+                                    title: const Text("What would you like to do?"),
+                                    content: const Text(
                                         "Would you like to call or send a message?"),
                                     actions: [
                                       TextButton(
@@ -485,7 +485,7 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                                           }
                                           Navigator.pop(context);
                                         },
-                                        child: Text("Call"),
+                                        child: const Text("Call"),
                                       ),
                                       TextButton(
                                         onPressed: () async {
@@ -503,7 +503,7 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                                           }
                                           Navigator.pop(context);
                                         },
-                                        child: Text("Message"),
+                                        child: const Text("Message"),
                                       ),
                                     ],
                                   );
@@ -524,8 +524,8 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text("What would you like to do?"),
-                                    content: Text(
+                                    title: const Text("What would you like to do?"),
+                                    content: const Text(
                                         "Would you like to call or send a message?"),
                                     actions: [
                                       TextButton(
@@ -544,7 +544,7 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                                           }
                                           Navigator.pop(context);
                                         },
-                                        child: Text("Call"),
+                                        child: const Text("Call"),
                                       ),
                                       TextButton(
                                         onPressed: () async {
@@ -562,7 +562,7 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                                           }
                                           Navigator.pop(context);
                                         },
-                                        child: Text("Message"),
+                                        child: const Text("Message"),
                                       ),
                                     ],
                                   );
@@ -742,12 +742,12 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                 ),
               ),
               widget.operator.uid == context.read<AuthController>().appUser!.uid
-                  ? SizedBox()
+                  ? const SizedBox()
                   : SizedBox(
                       height: screenHeight(context) * 0.03,
                     ),
               widget.operator.uid == context.read<AuthController>().appUser!.uid
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Container(
                       //padding: const EdgeInsets.all(20),
                       margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -836,10 +836,10 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                         ),
                       );
                     })
-                  : SizedBox(),
+                  : const SizedBox(),
 
               context.read<MachineryRegistrationController>().isCheckMachies
-                  ? SizedBox()
+                  ? const SizedBox()
                   : widget.operator.uid == _appUser.uid
                       ? const SizedBox(
                           height: 10,
@@ -864,7 +864,7 @@ class _OperatorDetailScreenState extends State<OperatorDetailsScreen> {
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
-                                        SnackBar(
+                                        const SnackBar(
                                           content:
                                               Text('Operator is not available'),
                                           duration: Duration(seconds: 3),

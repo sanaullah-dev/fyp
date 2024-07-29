@@ -69,7 +69,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
             future: _refreshData,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: SkeletonMachineryWidget());
+                return const Center(child: SkeletonMachineryWidget());
               } else if (snapshot.hasError) {
                 return Center(child: Text("Error: ${snapshot.error}"));
               } else {
@@ -79,71 +79,79 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
             },
           ),
         ),
-        bottomNavigationBar: SalomonBottomBar(
-          itemPadding: TargetPlatform.kIsWeb
-              ? const EdgeInsets.symmetric(horizontal: 30, vertical: 10)
-              : EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-          currentIndex: _currentIndex,
-          margin: TargetPlatform.kIsWeb
-              ? EdgeInsets.symmetric(
-                  horizontal: screenWidth(context) * 0.07, vertical: 10)
-              : EdgeInsets.all(8),
-          onTap: (i) {
-            setState(() => _currentIndex = i);
-            // ignore: unrelated_type_equality_checks
-            i == 0 &&
-                    context
-                            .read<MachineryRegistrationController>()
-                            .zoomDrawerController
-                            .isOpen!() ==
-                        true
-                ? context.read<MachineryRegistrationController>().zoomtogle()
-                : null;
-
-            //     ? Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-            //         return BottomNavigationScreen();
-            //       }))
-            //     : _currentIndex == 1
-            //         ? Navigator.of(context)
-            //             .push(MaterialPageRoute(builder: (ctx) {
-            //             return MapScreen();
-            //           }))
-            //         : _currentIndex == 3
-            //             ? Navigator.of(context)
-            //                 .push(MaterialPageRoute(builder: (ctx) {
-            //                 return ProfileScreen();
-            //               }))
-            //             : Container();
-          },
-          items: [
-            /// Home
-            SalomonBottomBarItem(
-              icon: const Icon(Icons.home),
-              title: const Text("Home"),
-              selectedColor: Colors.orangeAccent,
+        bottomNavigationBar: Container(
+          height: TargetPlatform.kIsWeb? 65:90,
+          child: Center(
+            child: Container(
+              width: 700,
+              child: SalomonBottomBar(
+                itemPadding: TargetPlatform.kIsWeb
+                    ? const EdgeInsets.symmetric(horizontal: 30, vertical: 10)
+                    : const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                currentIndex: _currentIndex,
+                margin: TargetPlatform.kIsWeb
+                    ? EdgeInsets.symmetric(
+                        horizontal: screenWidth(context) * 0.07, vertical: 10)
+                    : const EdgeInsets.all(8),
+                onTap: (i) {
+                  setState(() => _currentIndex = i);
+                  // ignore: unrelated_type_equality_checks
+                  i == 0 &&
+                          context
+                                  .read<MachineryRegistrationController>()
+                                  .zoomDrawerController
+                                  .isOpen!() ==
+                              true
+                      ? context.read<MachineryRegistrationController>().zoomtogle()
+                      : null;
+              
+                  //     ? Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
+                  //         return BottomNavigationScreen();
+                  //       }))
+                  //     : _currentIndex == 1
+                  //         ? Navigator.of(context)
+                  //             .push(MaterialPageRoute(builder: (ctx) {
+                  //             return MapScreen();
+                  //           }))
+                  //         : _currentIndex == 3
+                  //             ? Navigator.of(context)
+                  //                 .push(MaterialPageRoute(builder: (ctx) {
+                  //                 return ProfileScreen();
+                  //               }))
+                  //             : Container();
+                },
+                items: [
+                  /// Home
+                  SalomonBottomBarItem(
+                    icon: const Icon(Icons.home),
+                    title: const Text("Home"),
+                    selectedColor: Colors.orangeAccent,
+                  ),
+              
+                  /// Operator
+                  SalomonBottomBarItem(
+                    icon: const Icon(Icons.emoji_people),
+                    title: const Text("Operators"),
+                    selectedColor: Colors.orangeAccent,
+                  ),
+              
+                  /// Map
+                  SalomonBottomBarItem(
+                    icon: const Icon(Icons.pin_drop_outlined),
+                    title: const Text("Find"),
+                    selectedColor: Colors.orangeAccent,
+                  ),
+              
+                  /// Profile
+                  SalomonBottomBarItem(
+                    icon: const Icon(Icons.person),
+                    title: const Text("Profile"),
+                    selectedColor: Colors.orangeAccent,
+                  ),
+                ],
+              ),
             ),
-
-            /// Operator
-            SalomonBottomBarItem(
-              icon: const Icon(Icons.emoji_people),
-              title: const Text("Operators"),
-              selectedColor: Colors.orangeAccent,
-            ),
-
-            /// Map
-            SalomonBottomBarItem(
-              icon: const Icon(Icons.pin_drop_outlined),
-              title: const Text("Find"),
-              selectedColor: Colors.orangeAccent,
-            ),
-
-            /// Profile
-            SalomonBottomBarItem(
-              icon: const Icon(Icons.person),
-              title: const Text("Profile"),
-              selectedColor: Colors.orangeAccent,
-            ),
-          ],
+          ),
         ));
   }
 }

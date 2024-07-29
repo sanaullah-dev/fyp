@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:vehicle_management_and_booking_system/models/operator_model.dart';
 import 'package:vehicle_management_and_booking_system/models/operator_request_model.dart';
 import 'package:vehicle_management_and_booking_system/models/report_model.dart';
 import 'package:vehicle_management_and_booking_system/models/request_machiery_model.dart';
@@ -126,7 +125,9 @@ class RequestRepo {
       // Commit the batch
       await batch.commit();
     } catch (e) {
-      print('Failed to update status: $e');
+      if (kDebugMode) {
+        print('Failed to update status: $e');
+      }
       rethrow;
     }
   }
@@ -185,7 +186,9 @@ class RequestRepo {
               'messages') // assuming each request document has a sub-collection called 'messages'
           .add(messageData);
     } catch (e) {
-      print("Error adding message: $e");
+      if (kDebugMode) {
+        print("Error adding message: $e");
+      }
       rethrow;
     }
   }
@@ -346,7 +349,9 @@ class RequestRepo {
               'status': 'completed',
             });
     } on FirebaseException catch (e) {
-      print(e.message);
+      if (kDebugMode) {
+        print(e.message);
+      }
       rethrow;
     }
   }

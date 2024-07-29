@@ -17,6 +17,8 @@ import 'package:vehicle_management_and_booking_system/models/operator_model.dart
 import 'package:vehicle_management_and_booking_system/screens/google_map/single_machiney_map.dart';
 import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
+import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
+import 'package:flutter/foundation.dart' as TargetPlatform;
 
 class OperatorSearchScreen extends StatefulWidget {
   const OperatorSearchScreen({
@@ -107,7 +109,7 @@ class _OperatorSearchScreenState extends State<OperatorSearchScreen> {
                                     : AppColors.blackColor)),
                         contentPadding: const EdgeInsets.only(
                             left: 3, right: 2, bottom: 2, top: 2),
-                        hintText: "Name, Skill, City, Rating",
+                        hintText: "Name, Skill, City, Rating...",
                         hintStyle: TextStyle(
                             color: isDark ? null : AppColors.blackColor),
                         focusColor: isDark ? null : AppColors.blackColor,
@@ -150,123 +152,138 @@ class _OperatorSearchScreenState extends State<OperatorSearchScreen> {
             ),
           ],
         ),
-        body: ListView.separated(
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-            itemCount: _allOperators.length,
-            itemBuilder: ((context, index) {
-              final OperatorModel operator = _allOperators[index];
+        body: Center(
+          child: SizedBox(
+            width: TargetPlatform.kIsWeb ? 500 : screenWidth(context),
+            child: Container(
+              decoration: TargetPlatform.kIsWeb? const BoxDecoration(
+                  // border: Border.all(
+                  //   color: Colors.white,
+                  // ),
+                  borderRadius: BorderRadius.all(Radius.circular(10))): null,
+              child: ListView.separated(
+                  separatorBuilder: (context, index) {
+                    return const Divider();
+                  },
+                  itemCount: _allOperators.length,
+                  itemBuilder: ((context, index) {
+                    final OperatorModel operator = _allOperators[index];
 
-              return GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, AppRouter.operatorDetailsScreen,
-                      arguments: operator);
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(8),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 16.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(
-                        color: Colors.grey.shade400,
-                        width: 1.0,
-                      ),
-                    ),
-                    //  tileColor: AppColors.background,
-                    leading: CircleAvatar(
-                      backgroundColor: isDark ? null : AppColors.accentColor,
-                      radius: 35.0,
-                      //  backgroundColor: Colors.orange,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(200),
-                        child: kIsWeb
-                            ? Image.network(
-                                operator.operatorImage.toString(),
-                                width: 55.0, // diameter 70
-                                height: 55.0, // diameter 70
-                                fit: BoxFit.cover,
-                              )
-                            : CachedNetworkImage(
-                                width: 55.0, // diameter 70
-                                height: 55.0, // diameter 70
-                                fit: BoxFit.cover,
-                                imageUrl: operator.operatorImage!,
-                                placeholder: (context, url) =>
-                                    const CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
-                      ),
-                    ),
-                    title: Text(
-                      operator.name.toUpperCase().toString(),
-                      style: GoogleFonts.quantico(
-                          fontSize: 18, fontWeight: FontWeight.w700),
-                    ),
-                    subtitle: Text(
-                        "Work Experience: ${operator.years.toString()} Years"),
-                    trailing: GestureDetector(
+                    return GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (ctx) => SingleMachineMap(
-                              loc: operator,
-                              isOperator: true,
+                        Navigator.pushNamed(
+                            context, AppRouter.operatorDetailsScreen,
+                            arguments: operator);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(8),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 16.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            side: BorderSide(
+                              color: Colors.grey.shade400,
+                              width: 1.0,
                             ),
                           ),
-                        );
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.location_on_outlined),
-                              Builder(builder: (context) {
-                                String temp = operator.location.title;
-                                String city = temp.length > 9
-                                    ? "${temp.substring(0, mth.min(9, temp.length))}..."
-                                    : temp;
-                                return Text(
-                                  //"Islamabad",
-                                  city,
-
-                                  // widget.machineryDetails.address, overflow: TextOverflow.ellipsis,maxLines: 1,
-                                );
-                              }),
-                            ],
+                          //  tileColor: AppColors.background,
+                          leading: CircleAvatar(
+                            backgroundColor:
+                                isDark ? null : AppColors.accentColor,
+                            radius: 35.0,
+                            //  backgroundColor: Colors.orange,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(200),
+                              child: kIsWeb
+                                  ? Image.network(
+                                      operator.operatorImage.toString(),
+                                      width: 55.0, // diameter 70
+                                      height: 55.0, // diameter 70
+                                      fit: BoxFit.cover,
+                                    )
+                                  : CachedNetworkImage(
+                                      width: 55.0, // diameter 70
+                                      height: 55.0, // diameter 70
+                                      fit: BoxFit.cover,
+                                      imageUrl: operator.operatorImage!,
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    ),
+                            ),
                           ),
-                          FutureBuilder(
-                              future: Helper.getDistance(
-                                  lat: operator.location.latitude,
-                                  lon: operator.location.longitude),
-                              builder: (context, snapshot) {
-                                switch (snapshot.connectionState) {
-                                  case ConnectionState.waiting:
-                                    return const Text('Loading....');
-                                  default:
-                                    if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    } else {
+                          title: Text(
+                            operator.name.toUpperCase().toString(),
+                            style: GoogleFonts.quantico(
+                                fontSize: 18, fontWeight: FontWeight.w700),
+                          ),
+                          subtitle: Text(
+                              "Work Experience: ${operator.years.toString()} Years"),
+                          trailing: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) => SingleMachineMap(
+                                    loc: operator,
+                                    isOperator: true,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.location_on_outlined),
+                                    Builder(builder: (context) {
+                                      String temp = operator.location.title;
+                                      String city = temp.length > 9
+                                          ? "${temp.substring(0, mth.min(9, temp.length))}..."
+                                          : temp;
                                       return Text(
-                                        '${snapshot.data} km',
-                                        style: GoogleFonts.firaSans(
-                                            fontWeight: FontWeight.w300),
+                                        //"Islamabad",
+                                        city,
+
+                                        // widget.machineryDetails.address, overflow: TextOverflow.ellipsis,maxLines: 1,
                                       );
-                                    }
-                                }
-                              }),
-                        ],
+                                    }),
+                                  ],
+                                ),
+                                FutureBuilder(
+                                    future: Helper.getDistance(
+                                        lat: operator.location.latitude,
+                                        lon: operator.location.longitude),
+                                    builder: (context, snapshot) {
+                                      switch (snapshot.connectionState) {
+                                        case ConnectionState.waiting:
+                                          return const Text('Loading....');
+                                        default:
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                                'Error: ${snapshot.error}');
+                                          } else {
+                                            return Text(
+                                              '${snapshot.data} km',
+                                              style: GoogleFonts.firaSans(
+                                                  fontWeight: FontWeight.w300),
+                                            );
+                                          }
+                                      }
+                                    }),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              );
-            })));
+                    );
+                  })),
+            ),
+          ),
+        ));
   }
 }
 

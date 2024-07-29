@@ -493,14 +493,14 @@ class _SentRequestsScreenState extends State<SentRequestsScreen> {
                                                                   builder:
                                                                       (context) {
                                                                     return AlertDialog(
-                                                                      title: Text(
+                                                                      title: const Text(
                                                                           "Comment"),
                                                                       content: Text(
                                                                           requests[index]
                                                                               .comment!),
                                                                       actions: <Widget>[
                                                                         TextButton(
-                                                                          child: Text(
+                                                                          child: const Text(
                                                                               'OK'),
                                                                           onPressed:
                                                                               () {

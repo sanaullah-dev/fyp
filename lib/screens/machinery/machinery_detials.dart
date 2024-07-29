@@ -14,7 +14,6 @@ import 'package:vehicle_management_and_booking_system/screens/common/image_viewe
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
-import 'package:vehicle_management_and_booking_system/screens/machinery/complaint_screen.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 // ignore: library_prefixes

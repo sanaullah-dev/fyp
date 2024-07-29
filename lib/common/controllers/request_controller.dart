@@ -11,7 +11,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
-import 'package:vehicle_management_and_booking_system/common/controllers/google_map_geocoding.dart';
 import 'package:vehicle_management_and_booking_system/common/repo/machinery_repo.dart';
 import 'package:vehicle_management_and_booking_system/common/repo/request_repo.dart';
 import 'package:vehicle_management_and_booking_system/models/operator_request_model.dart';
@@ -20,8 +19,8 @@ import 'package:vehicle_management_and_booking_system/models/request_machiery_mo
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
-import 'package:flutter/foundation.dart' as TargetPlatform;
-import 'package:http/http.dart' as http;
+// import 'package:flutter/foundation.dart' as TargetPlatform;
+// import 'package:http/http.dart' as http;
 
 class RequestController with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -109,7 +108,9 @@ class RequestController with ChangeNotifier {
       request.status = status;
       await _repo.updateRequest(request);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       rethrow;
     }
   }
@@ -729,7 +730,7 @@ class RequestController with ChangeNotifier {
       // final statusListener = StatusUpdateListener(uid: _appUser!.uid, requestId: request!.requestId);
       // statusListener.startListening();
       log("database6");
-      ;
+      
       _processDatabaseEvent(event);
       isLoadingForTracking = false;
       notifyListeners();
@@ -1051,7 +1052,9 @@ class RequestController with ChangeNotifier {
     try {
       await _repo.addMessage(requestId, messageData);
     } catch (e) {
-      print("Error adding message: $e");
+      if (kDebugMode) {
+        print("Error adding message: $e");
+      }
       rethrow;
     }
   }
@@ -1178,7 +1181,9 @@ class RequestController with ChangeNotifier {
           comment: comment,
           isThisMachineriesReports: isThisMachineriesReports);
     } on FirebaseException catch (e) {
-      print(e.message);
+      if (kDebugMode) {
+        print(e.message);
+      }
       rethrow;
     }
   }

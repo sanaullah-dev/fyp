@@ -61,7 +61,7 @@ dependencies:
   google_fonts: ^5.1.0
   photo_view: ^0.14.0
   shimmer: ^3.0.0
-  flutter_image_compress: ^2.0.4
+  flutter_image_compress: ^2.1.0
   flutter_zoom_drawer: ^3.1.1
   firebase_messaging: ^14.6.5
   flutter_local_notifications: ^15.1.0+1

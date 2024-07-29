@@ -1,6 +1,6 @@
-import 'dart:developer';
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/fade_animation.dart';
@@ -9,7 +9,6 @@ import 'package:vehicle_management_and_booking_system/screens/login_signup/login
 import 'package:vehicle_management_and_booking_system/screens/login_signup/otp_screen.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 import 'package:vehicle_management_and_booking_system/widgets/background.dart';
-import 'package:http/http.dart' as http;
 // ignore: library_prefixes
 import 'package:flutter/foundation.dart' as TargetPlatform;
 
@@ -89,13 +88,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       delay: 2,
                       child: Container(
                         alignment: Alignment.center,
+                         
                         margin: const EdgeInsets.symmetric(horizontal: 40),
                         child: TextFormField(
+                          inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")), ],
                           controller: _nameController,
+                          keyboardType: TextInputType.name,
                           decoration: const InputDecoration(
                             labelStyle: TextStyle(fontSize: 18),
                             labelText: "Name",
+                            
                           ),
+                            validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter Name';
+                        }
+                        return null;
+                      },
                         ),
                       ),
                     ),
@@ -147,6 +157,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           decoration: const InputDecoration(
                               labelStyle: TextStyle(fontSize: 18),
                               labelText: "Mobile Number"),
+
+                                     validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter Number';
+                        }
+                        return null;
+                      },
                         ),
                       ),
                     ),
@@ -162,6 +179,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             labelStyle: TextStyle(fontSize: 18),
                             labelText: "Languages",
                           ),
+                          validator: (value) {
+                        
+                        if (value!.isEmpty) {
+                          return 'Please enter Language';
+                        } else {
+                          return null;
+                        }
+                      },
                         ),
                       ),
                     ),
@@ -340,7 +365,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             child: const Text(
                               "SIGN UP",
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: TextStyle( color: Colors.white,
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),

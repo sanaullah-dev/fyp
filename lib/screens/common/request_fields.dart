@@ -249,10 +249,11 @@ void _getAllMachineries() async {
                       validator: (value) {
                         Pattern pattern = r'^(03[0-9]{2})([0-9]{7})$';
                         RegExp regex = RegExp(pattern.toString());
-                        if (!regex.hasMatch(value!) || value.isEmpty)
+                        if (!regex.hasMatch(value!) || value.isEmpty) {
                           return 'Invalid mobile number';
-                        else
+                        } else {
                           return null;
+                        }
                       },
                       controller: _phoneNumber,
                     ),

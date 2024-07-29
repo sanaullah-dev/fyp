@@ -29,9 +29,9 @@ class _FadeAnimationState extends State<FadeAnimation> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: _visible ? 1 : 0,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         transform: _visible
             ? Matrix4.translationValues(0, 0, 0)
             : Matrix4.translationValues(0, -30, 0),

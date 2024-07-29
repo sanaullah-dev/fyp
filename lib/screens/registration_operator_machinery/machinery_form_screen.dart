@@ -161,7 +161,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                   helperText: _selectedAddress == null
                       ? "Press location and popupMenuButton to get accurate location"
                       : null,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   hintText: "abc,Islamabad,Pakistan",
                   labelText: 'Location',
                   suffixIcon: Row(
@@ -332,7 +332,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                             _images.removeAt(index);
                                           });
                                         },
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.cancel_outlined,
                                           color: Colors.red,
                                         )),
@@ -352,7 +352,7 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                             _webImages.removeAt(index);
                                           });
                                         },
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.cancel_outlined,
                                           color: Colors.red,
                                         )),
@@ -420,8 +420,8 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                       : Container(
                           width: 100,
                           height: 40,
-                          decoration: BoxDecoration(
-                            color: isDark ? null : AppColors.accentColor,
+                          decoration: const BoxDecoration(
+                            color:  AppColors.accentColor,
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
@@ -504,11 +504,11 @@ class _MachineryFormScreenState extends State<MachineryFormScreen> {
                                 }
                               }
                             },
-                            child: Text(
+                            child: const Text(
                               "Submit",
                               style: TextStyle(
                                 fontSize: 18,
-                                color: isDark ? null : AppColors.blackColor,
+                                color:  AppColors.blackColor,
                               ),
                             ),
                           ),

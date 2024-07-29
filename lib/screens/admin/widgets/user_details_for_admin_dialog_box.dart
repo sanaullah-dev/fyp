@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:vehicle_management_and_booking_system/models/machinery_model.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
 
@@ -8,7 +7,7 @@ void showUserDetails(BuildContext context, UserModel user) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("User Details"),
+        title: const Text("User Details"),
         content: SingleChildScrollView(
             child: ListBody(
           children: <Widget>[
@@ -37,7 +36,7 @@ void showUserDetails(BuildContext context, UserModel user) {
         )),
         actions: <Widget>[
           TextButton(
-            child: Text('Close'),
+            child: const Text('Close'),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -61,7 +60,7 @@ Widget _buildContainer(String text) {
     ),
     child: SelectableText(
       text,
-      style: TextStyle(fontSize: 16.0, color: Colors.black),
+      style: const TextStyle(fontSize: 16.0, color: Colors.black),
     ),
   );
 }
@@ -73,7 +72,7 @@ void showMachineryDetails(BuildContext context, MachineryModel machinery) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Machinery Details"),
+        title: const Text("Machinery Details"),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
@@ -100,7 +99,7 @@ void showMachineryDetails(BuildContext context, MachineryModel machinery) {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('Close'),
+            child: const Text('Close'),
             onPressed: () {
               Navigator.of(context).pop();
             },

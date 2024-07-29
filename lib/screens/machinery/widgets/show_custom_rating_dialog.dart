@@ -74,7 +74,7 @@ Future<void> showCustomRatingDialog({
             "${operator?.name.toUpperCase()??user?.name.toUpperCase()??machine?.title.toUpperCase()}",
                // 'Rating Dialog',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -122,7 +122,7 @@ Future<void> showCustomRatingDialog({
           ),
           actions: <Widget>[
             provider.isloading
-                ? SizedBox()
+                ? const SizedBox()
                 : TextButton(
                     child: const Text('Remind Me Later'),
                     onPressed: () {
@@ -138,7 +138,7 @@ Future<void> showCustomRatingDialog({
                   ),
             provider.isloading
                 ? Container(
-                    child: Center(
+                    child: const Center(
                       child: CircularProgressIndicator(),
                     ),
                   )

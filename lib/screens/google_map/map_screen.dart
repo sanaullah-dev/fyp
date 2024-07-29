@@ -4,17 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart' as TargetPlatform;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:vehicle_management_and_booking_system/app/router.dart';
-import 'package:vehicle_management_and_booking_system/common/controllers/request_controller.dart';
-import 'package:vehicle_management_and_booking_system/models/machinery_model.dart';
 import 'package:vehicle_management_and_booking_system/models/operator_model.dart';
 import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
-import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 // ignore: import_of_legacy_library_into_null_safe
 
 // ignore: must_be_immutable

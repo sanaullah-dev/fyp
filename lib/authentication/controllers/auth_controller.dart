@@ -13,7 +13,6 @@ import 'package:uuid/uuid.dart';
 import 'package:vehicle_management_and_booking_system/app/router.dart';
 import 'package:vehicle_management_and_booking_system/authentication/db/database.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
-import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/block_screen.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
 import 'dart:math' as math;
@@ -23,8 +22,8 @@ class AuthController extends ChangeNotifier {
   final AuthDB _db = AuthDB();
   final MachineryRegistrationController _machine =
       MachineryRegistrationController();
-  final OperatorRegistrationController _operatorRegistrationController =
-      OperatorRegistrationController();
+  // final OperatorRegistrationController _operatorRegistrationController =
+  //     OperatorRegistrationController();
   // ignore: prefer_typing_uninitialized_variables
   Position? position;
   bool? verified;

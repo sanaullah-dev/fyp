@@ -1,23 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:vehicle_management_and_booking_system/app/app.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/models/machinery_model.dart';
 import 'package:flutter/foundation.dart' as TargetPlatform;
-import 'package:vehicle_management_and_booking_system/models/request_machiery_model.dart';
 import 'package:vehicle_management_and_booking_system/screens/machinery/machinery_detials.dart';
 import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
-import 'package:vehicle_management_and_booking_system/widgets/notification.dart';
 
 // ignore: must_be_immutable
 class MachineryListScreen extends StatefulWidget {
@@ -603,6 +597,8 @@ class _MachineryListScreenState extends State<MachineryListScreen> {
                                 }
                               }),
                             ),
+
+                            
                           ),
                         ],
                       ),

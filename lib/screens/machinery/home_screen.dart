@@ -237,7 +237,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ..._allMachineries.where((machinery) {
           return machinery.title.toLowerCase().contains(value.toLowerCase()) ||
               machinery.model.toLowerCase().contains(value.toLowerCase()) ||
-              machinery.charges.toString().contains(value.toLowerCase()) ||
+              machinery.charges.toString().contains(value.toLowerCase()) 
+              ||
+              machinery.rating.toString().contains(value.toLowerCase())||
               machinery.location.title
                   .toLowerCase()
                   .contains(value.toLowerCase());
@@ -297,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ? TextField(
                   decoration: const InputDecoration(
                       contentPadding: EdgeInsets.all(5),
-                      hintText: "Search...",
+                      hintText: "Title, Offer, City, Rating...",
                       focusColor: Colors.white,
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder()),

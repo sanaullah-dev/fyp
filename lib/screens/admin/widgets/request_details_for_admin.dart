@@ -8,7 +8,7 @@ void showRequestDetails(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Request Details"),
+        title: const Text("Request Details"),
         content: SingleChildScrollView(
             child: ListBody(
           children: <Widget>[
@@ -35,7 +35,7 @@ void showRequestDetails(
         )),
         actions: <Widget>[
           TextButton(
-            child: Text('Close'),
+            child: const Text('Close'),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -60,7 +60,7 @@ Widget _buildContainer(String text) {
     ),
     child: SelectableText(
       text,
-      style: TextStyle(fontSize: 16.0, color: Colors.black),
+      style: const TextStyle(fontSize: 16.0, color: Colors.black),
     ),
   );
 }

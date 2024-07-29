@@ -18,12 +18,10 @@ import 'package:vehicle_management_and_booking_system/screens/common/profile_scr
 import 'package:vehicle_management_and_booking_system/screens/common/widgets/card_operator_requests.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/widgets/column_button_accept_reject.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
-import 'package:vehicle_management_and_booking_system/screens/machinery/widgets/show_custom_rating_dialog.dart';
 import 'package:vehicle_management_and_booking_system/screens/operator/operator_details.dart';
 import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
-import 'package:vehicle_management_and_booking_system/utils/notification_method.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   final HiringRequestModel hiringRequest;
@@ -79,7 +77,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         // DateTime twoDaysLater = now.add(Duration(hours: 14));
         DateTime interviewDate = widget.hiringRequest.interViewDateTime!;
         // Calculate the date two days after the interview date
-        DateTime twoDaysAfterInterview = interviewDate.add(Duration(days: 2));
+        DateTime twoDaysAfterInterview = interviewDate.add(const Duration(days: 2));
 
         if (widget.hiringRequest.status == "Hiring Completed" &&
             viewDetails == false &&
@@ -92,14 +90,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
                     'Congratulations! You joined us.',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     // Handle button tap when the request status is "complete"
@@ -117,7 +115,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     //   ),
                     // );
                   },
-                  child: Text('View Details'),
+                  child: const Text('View Details'),
                 ),
               ],
             ),
@@ -167,9 +165,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     "Company Name", widget.hiringRequest.companyName),
                 GestureDetector(
                     onTap: () async {
-                      widget.hiringRequest.status = "Pending";
-                      await value.updateOperatorRequest(
-                          request: widget.hiringRequest);
+                      // widget.hiringRequest.status = "Pending";
+                      // await value.updateOperatorRequest(
+                      //     request: widget.hiringRequest);
                     },
                     child: _buildDetailTile(
                         "Purpose", widget.hiringRequest.purpose)),
@@ -243,7 +241,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   },
                                 )
                               : ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
+                                  const SnackBar(
                                       content: Text(
                                           "Cannot change after acceptance")));
                         }

@@ -171,7 +171,7 @@ class _DetailedReportScreenState extends State<DetailedReportScreen> {
                         widget.isAdmin ==true?
                         SelectableText(widget.isThisMachineriesReports
                             ? "\nID: ${machine.machineryId}"
-                            : ""):SizedBox(),
+                            : ""):const SizedBox(),
                       ],
                     ),
                     onTap: () {
@@ -337,7 +337,7 @@ class _DetailedReportScreenState extends State<DetailedReportScreen> {
                     height: 10,
                   ),
                   widget.isThisMachineriesReports
-                      ? SizedBox()
+                      ? const SizedBox()
                       : widget.isAdmin != true
                           ? Container()
                           : Builder(builder: (context) {

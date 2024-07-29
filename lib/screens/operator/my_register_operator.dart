@@ -139,10 +139,10 @@ class _MyRegisteredOperatorsState extends State<MyRegisteredOperators> {
                           trailing: operator.uid !=
                                   context.read<AuthController>().appUser!.uid
                               ? operator.isHired == true
-                                  ? Text("Hired")
-                                  : operator.isAvailable == true? Text("Available"):Text("UnAvailable")
+                                  ? const Text("Hired")
+                                  : operator.isAvailable == true? const Text("Available"):const Text("UnAvailable")
                               : operator.isHired == true
-                                  ? Text("Hired")
+                                  ? const Text("Hired")
                                   : SingleChildScrollView(
                                       child: Container(
                                         child: Column(
@@ -155,7 +155,7 @@ class _MyRegisteredOperatorsState extends State<MyRegisteredOperators> {
                                                   : "Available",
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16.0,
+                                               // fontSize: 11.0,
                                               ),
                                             ),
                                             Switch(

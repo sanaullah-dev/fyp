@@ -192,7 +192,7 @@ class _SingleMachineryWidgetState extends State<SingleMachineryWidget>
                 decoration:  BoxDecoration(
                     color: isDarkModeOn ? const Color.fromARGB(255, 111, 108, 108): Colors.yellow,
                     borderRadius:
-                        BorderRadius.only(topRight: Radius.circular(20))),
+                        const BorderRadius.only(topRight: Radius.circular(20))),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(

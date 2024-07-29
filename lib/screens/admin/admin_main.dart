@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
-import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
-import 'package:vehicle_management_and_booking_system/common/controllers/request_controller.dart';
 import 'package:vehicle_management_and_booking_system/screens/admin/admin_show_users.dart';
 import 'package:vehicle_management_and_booking_system/screens/admin/admin_total_operator.dart';
 import 'package:vehicle_management_and_booking_system/screens/admin/reports/all_reports_screen.dart';
@@ -11,6 +8,8 @@ import 'package:vehicle_management_and_booking_system/screens/admin/reports/comp
 import 'package:vehicle_management_and_booking_system/screens/common/user_total_machineris.dart';
 
 class AdminScreen extends StatefulWidget {
+  const AdminScreen({super.key});
+
   @override
   State<AdminScreen> createState() => _AdminScreenState();
 }
@@ -20,7 +19,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
     await  context.read<MachineryRegistrationController>().fetchAllUsers();
     });
@@ -30,7 +29,7 @@ class _AdminScreenState extends State<AdminScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Screen'),
+        title: const Text('Admin Screen'),
       ),
       body: GridView.count(
         crossAxisCount: 2,
@@ -62,7 +61,7 @@ class _AdminScreenState extends State<AdminScreen> {
             iconData: Icons.person_remove,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-                return TotalOperatorsAdminScreen();
+                return const TotalOperatorsAdminScreen();
               }));
             },
           ),
@@ -159,12 +158,12 @@ class _AdminScreenState extends State<AdminScreen> {
       required IconData iconData,
       required VoidCallback onTap}) {
     return Container(
-      margin: EdgeInsets.all(10.0),
+      margin: const EdgeInsets.all(10.0),
       child: Card(
         child: InkWell(
           onTap: onTap,
           child: Container(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -172,7 +171,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   iconData,
                   size: 50.0,
                 ),
-                SizedBox(height: 10.0),
+                const SizedBox(height: 10.0),
                 Text(
                   title,
                   textAlign: TextAlign.center,

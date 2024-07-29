@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';

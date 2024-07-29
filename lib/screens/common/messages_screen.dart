@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +9,10 @@ import 'package:vehicle_management_and_booking_system/common/controllers/request
 import 'package:vehicle_management_and_booking_system/models/messages_model.dart';
 import 'package:vehicle_management_and_booking_system/models/operator_request_model.dart';
 import 'package:vehicle_management_and_booking_system/models/request_machiery_model.dart';
-import 'package:vehicle_management_and_booking_system/screens/common/drawer_items/operator_requests.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/profile_screen.dart';
 import 'package:vehicle_management_and_booking_system/screens/login_signup/model/user_model.dart';
 import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
-import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 import 'package:vehicle_management_and_booking_system/utils/notification_method.dart';
 
 class MessagesScreen extends StatefulWidget {

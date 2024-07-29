@@ -51,6 +51,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                           width: 80.0,
@@ -72,7 +73,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 18,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
@@ -87,7 +88,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 5,
+                          height: 0,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
@@ -168,7 +169,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     // await context.read<MachineryRegistrationController>().getAllMachineries();
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: ((context) {
-                      return MyFavoriteMachineriesState();
+                      return const MyFavoriteMachineriesState();
                     })));
                   },
                 ),
@@ -216,7 +217,7 @@ class _MenuScreenState extends State<MenuScreen> {
               onTap: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return AboutUsScreen();
+                  return const AboutUsScreen();
                 }));
               },
             ),

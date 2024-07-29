@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -7,18 +6,15 @@ import 'package:vehicle_management_and_booking_system/authentication/controllers
 import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/operator_register_controller.dart';
 import 'package:vehicle_management_and_booking_system/common/controllers/request_controller.dart';
-import 'package:vehicle_management_and_booking_system/models/machinery_model.dart';
-import 'package:flutter/foundation.dart' as TargetPlatform;
 import 'package:vehicle_management_and_booking_system/screens/common/widgets/machinery_favorite.dart';
 import 'package:vehicle_management_and_booking_system/screens/common/widgets/operator_favorite.dart';
-import 'package:vehicle_management_and_booking_system/screens/machinery/machinery_detials.dart';
 import 'package:vehicle_management_and_booking_system/utils/app_colors.dart';
 import 'package:vehicle_management_and_booking_system/utils/const.dart';
 import 'package:vehicle_management_and_booking_system/utils/media_query.dart';
 
 // ignore: must_be_immutable
 class MyFavoriteMachineriesState extends StatefulWidget {
-  MyFavoriteMachineriesState({super.key});
+  const MyFavoriteMachineriesState({super.key});
 
   @override
   State<MyFavoriteMachineriesState> createState() =>
@@ -78,7 +74,7 @@ class _MyFavoriteMachineriesStateState
       //   ),
       // ),
       body: setIt != true
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator.adaptive(),
             )
           : Column(
@@ -138,7 +134,7 @@ class _MyFavoriteMachineriesStateState
                     ? documentsForMachinery.isEmpty
                         ? SizedBox(
                             height: screenHeight(context) * 0.5,
-                            child: Center(
+                            child: const Center(
                               child: Text("No Favorite Machinery"),
                             ),
                           )
@@ -146,7 +142,7 @@ class _MyFavoriteMachineriesStateState
                     : documentsForOperators.isEmpty
                         ? SizedBox(
                             height: screenHeight(context) * 0.5,
-                            child: Center(
+                            child: const Center(
                               child: Text("No Favorite Operators"),
                             ),
                           )

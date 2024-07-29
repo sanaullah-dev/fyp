@@ -17,6 +17,7 @@ class UserListPageForAdmin extends StatefulWidget {
 
   bool? isActivate;
   @override
+  // ignore: library_private_types_in_public_api
   _UserListPageForAdminState createState() => _UserListPageForAdminState();
 }
 
@@ -26,7 +27,6 @@ class _UserListPageForAdminState extends State<UserListPageForAdmin> {
 
   @override
   void initState() {
-    // TODO: implement initState
     users = [...context.read<MachineryRegistrationController>().allUsers!];
     super.initState();
   }
@@ -118,6 +118,7 @@ class _UserListPageForAdminState extends State<UserListPageForAdmin> {
 
                 // Call some method here if search is cancelled
                 if (!_isSearching) {
+                  // ignore: avoid_print
                   print("Search bar was hidden");
                 }
               });
@@ -250,6 +251,7 @@ class _UserListPageForAdminState extends State<UserListPageForAdmin> {
                   await context.read<AuthController>().updateUserForBlock(user);
                   users!.remove(user);
                   setState(() {});
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
               },

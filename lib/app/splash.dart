@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
+
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +8,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_management_and_booking_system/authentication/controllers/auth_controller.dart';
-import 'package:vehicle_management_and_booking_system/common/controllers/machinery_register_controller.dart';
-import 'package:vehicle_management_and_booking_system/screens/machinery/widgets/shimmer.dart';
 import 'package:vehicle_management_and_booking_system/widgets/notification.dart';
 
 class SplashScreenOrLoadingScreen extends StatefulWidget {
@@ -25,7 +23,6 @@ class _SplashScreenOrLoadingScreenState
   NotificationServices notificationServices = NotificationServices();
   @override
   void initState() {
-    // TODO: implement initState
     if (kIsWeb) {
       notificationServices.messageListener(context);
     } else {
